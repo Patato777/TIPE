@@ -25,19 +25,23 @@ class AgregGraph(Graph) : #Children class of Graph, for this specific algorithm
             for pool in self.pools :
                 "print(pool.center.free_vertices)"#debug
                 #Adding the nearest node from the center of the pool
-                pool.new_node = self.nodes[min(pool.center.free_vertices,key=lambda i : pool.center.free_vertices[i].length)]
+                pool.new_node = self.nodes[min(pool.center.free_vertices,key=lambda i : pool.dist_to_node(self.nodes[i]))]
                 "print([nod.id for nod in pool.nodes])"#debug
-                #Eliminating the connection to the other nodes
+                #Eliminating the connections to the other nodes
                 for node in self.nodes :
+                    if node.id != pool.new_node.id :
+                        del node.free_vertices[pool.new_node.id]
+                #debug
+                """for node in self.nodes :
                     try :
                         if node.id != pool.new_node.id :
                             del node.free_vertices[pool.new_node.id]
                     except Exception as error :#TODO: Why does it throw that f***g error
-                        print('error:',error,'node:',node.id,'new node:',pool.new_node.id,'node.free vertices:',node.free_vertices.keys(),'new_node.free vertices:',pool.new_node.free_vertices.keys())
-                while pool.new_node in new_nodes :#It probably shouldn't happen... (I think?)
+                        print('error:',error,'node:',node.id,'new node:',pool.new_node.id,'node.free vertices:',node.free_vertices.keys(),'new_node.free vertices:',pool.new_node.free_vertices.keys())"""
+                """while pool.new_node in new_nodes :#It probably shouldn't happen... (I think?)
                     #Anyway, if 2 clusters try to aggregate the same node
                     conflict(pool,pool.new_node.pool)
-                    print("C'est une boucle infinie MDR")#debug
+                    print("C'est une boucle infinie MDR")#debug"""
                 new_nodes.append(pool.new_node)
                 pool.new_node.pool = pool
                 pool.nodes.append(pool.new_node)
@@ -54,7 +58,7 @@ class Pool :#Class of clusters
         self.size = 0
         self.nodes = list()
 
-    def dist_to_node(self,node) :#The distance to a node #TODO: use this instead of centers during aggregation
+    def dist_to_node(self,node) :#The distance to a node
         return sum([node.vertices[pnode.id].length for pnode in self.nodes])
 
 def mykmeans(k,graph) :#Main function
