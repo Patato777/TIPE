@@ -13,9 +13,6 @@ class Graph :
             for j in range(k,len(array)) :
                 self.vertices.append(Vertice(array[k,j],[self.nodes[k],self.nodes[j]]))
                 self.nodes[k].vertices[j],self.nodes[j].vertices[k] = self.vertices[-1],self.vertices[-1]
-        for node in self.nodes :
-            node.free_vertices = node.vertices.copy()
-            del node.free_vertices[node.id]
 
 class Node :
     def __init__(self,nb) :
