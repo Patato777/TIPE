@@ -2,11 +2,17 @@ import tkinter
 from graph import *
 
 class AgregGraph(Graph) : #Children class of Graph, for this specific algorithm
+    def __init__(self,array) :#Adding the free_vertices variable to each node, indicating which nodes aren't in a cluster yet
+        super().__init__(array)
+        for node in self.nodes :
+            node.free_vertices = node.vertices.copy()
+            del node.free_vertices[node.id]
+            
     def baseseeds(self,k) :#Choosing the seeds for kmeans
         seeds = list()
         seeds.extend(max(self.vertices,key=lambda v : v.length).between)#Beginning with the 2 most distant nodes 
         for seed in range(k-2) :#Adding the node the furthest away from the barycentre
-        #TODO: a seed can be chosen multiple times
+        #TODO: can a seed be chosen multiple times?
             seeds.append(max(self.nodes,key=lambda n : sum([n.vertices[s.id].length for s in seeds])))
         return seeds
     
