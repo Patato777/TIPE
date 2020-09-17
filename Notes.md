@@ -8,6 +8,8 @@ CAH (choix des barycentres initiaux)-> réalocation dynamique
 
 variance inter-classes
 
+Isodata (Ball & Hall 1965)
+
 To read:
  - R. Forgy, Cluster Analysis of Multivariate Data : Efficiency versus Interpretability of Classification, Biometrics (1965), n°21, 768–769
  - E. Diday, The dynamic clusters method in nonhierarchical clustering, International Journal of Computer & Information Sciences 2 (1973), n°1, 61–88.
