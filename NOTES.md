@@ -1,12 +1,10 @@
 # Notes
 
-saut de Ward
+variance inter-classes dans le cas du saut de Ward
 
-représentation par ACP, AFD, AFCM ou MDS
+d(A,B) = d(gA,gB)x(NaNb)/(Na+Nb) (saut de Ward)
 
 CAH (choix des barycentres initiaux)-> réalocation dynamique
-
-variance inter-classes
 
 Isodata (Ball & Hall 1965)
 
