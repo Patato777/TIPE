@@ -1,4 +1,4 @@
-import tkinter
+import logging
 from graph import *
 
 class AgregGraph(Graph) : #Children class of Graph, for this specific algorithm
@@ -23,21 +23,21 @@ class AgregGraph(Graph) : #Children class of Graph, for this specific algorithm
         for augment in range(k) :
             new_nodes = list()
             for pool in self.pools :
-                "print(pool.center.free_vertices)"#debug
+                logging.debug(str(pool.center.free_vertices))#debug
                 #Adding the nearest node from the center of the pool
                 pool.new_node = self.nodes[min(pool.center.free_vertices,key=lambda i : pool.center.free_vertices[i].length)]
-                "print([nod.id for nod in pool.nodes])"#debug
+                logging.debug(str([nod.id for nod in pool.nodes]))#debug
                 #Eliminating the connection to the other nodes
                 for node in self.nodes :
                     try :
                         if node.id != pool.new_node.id :
                             del node.free_vertices[pool.new_node.id]
                     except Exception as error :#TODO: Why does it throw that f***g error
-                        print('error:',error,'node:',node.id,'new node:',pool.new_node.id,'node.free vertices:',node.free_vertices.keys(),'new_node.free vertices:',pool.new_node.free_vertices.keys())
+                        logging.debug(f'error:{error}, node:{node.id}, new node:{pool.new_node.id}, node.free vertices:{node.free_vertices.keys()}, new_node.free vertices:{pool.new_node.free_vertices.keys()}')
                 while pool.new_node in new_nodes :#It probably shouldn't happen... (I think?)
                     #Anyway, if 2 clusters try to aggregate the same node
-                    conflict(pool,pool.new_node.pool)
-                    print("C'est une boucle infinie MDR")#debug
+                    self.conflict(pool,pool.new_node.pool)
+                    logging.debug("C'est une boucle infinie MDR")#debug
                 new_nodes.append(pool.new_node)
                 pool.new_node.pool = pool
                 pool.nodes.append(pool.new_node)
@@ -62,11 +62,12 @@ def mykmeans(k,graph) :#Main function
     seeds = workgraph.baseseeds(k)
     allseeds = list()
     while set(seeds) not in allseeds :#While the seeds change on each iteration, creating new clusters from them
-        print(allseeds)#debug
+        logging.debug(str(allseeds))#debug
         allseeds.append(set(seeds))
         workgraph = AgregGraph(graph)
         workgraph.agreg(seeds,k)
         seeds = [pool.center for pool in workgraph.pools]#Re-defining seeds as the centers of just created clusters
     return [[node.id for node in pool.nodes] for pool in workgraph.pools]
-    
+
+logging.basicConfig(filename='resources/kmeans.log', level=logging.DEBUG)
 #graph = numpy.array(genweightgraph(n,-100,100))#debug
