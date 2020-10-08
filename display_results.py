@@ -1,12 +1,12 @@
 from tkinter import *
-import os
+import os,logging
 
 class Map:
     def __init__(self,canvas,minc,maxc):
         self.canvas = canvas
         self.canvas.pack()
         corners,img = self.choosemap(minc,maxc)
-        print(corners,corners[0][0])
+        logging.debug(str((corners,corners[0][0])))
         self.img = PhotoImage(file=f'.{os.sep}resources{os.sep}{img}')
         self.imgh,self.imgw = self.img.height(),self.img.width()
         self.canvas.config(height=self.imgh, width=self.imgw)
@@ -15,7 +15,7 @@ class Map:
         self.minlong,self.minlat = corners[1][0],corners[0][1]
 
     def choosemap(self,minc,maxc) :
-        print(minc,maxc)
+        logging.debug(str((minc,maxc)))
         with open(f'.{os.sep}resources{os.sep}dimmap.txt') as f :
             mapindex = eval(f.read())
         included = lambda corners : minc[0]>corners[1][0] and minc[1]>corners[0][1] and maxc[0]<corners[0][0] and maxc[1]<corners[1][1]
@@ -39,7 +39,7 @@ class Population:
         self.pop = population
         self.min = (min(self.pop,key = lambda item : item[0])[0],min(self.pop,key = lambda item : item[1])[1])
         self.max = (max(self.pop,key = lambda item : item[0])[0],max(self.pop,key = lambda item : item[1])[1])
-        print(self.pop,self.min)
+        logging.debug(str((self.pop,self.min)))
         
 class Main:
     def __init__(self,population):
@@ -48,7 +48,8 @@ class Main:
         self.map = Map(Canvas(self.root),self.pop.min,self.pop.max)
         self.root.update()
 
-    """>>> main = Main	([(50,0),(45,5)])
+logging.basicConfig(filename='resources/display.log', level=logging.DEBUG)
+""">>> main = Main	([(50,0),(45,5)])
 [(50, 0), (45, 5)] (45, 0)
 (45, 0) (50, 5)
 >>> main.map.plot(50,0,'foo')
