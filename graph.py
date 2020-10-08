@@ -3,7 +3,7 @@ import random,numpy,copy,math
 def genweightgraph(n,mini,maxi) :
     graph = [[random.randint(mini,maxi) for k in range(n-1)] for k in range(n)]
     vertices = [[math.sqrt(sum([(x[k]-y[k])**2 for k in range(n-1)])) for y in graph] for x in graph]
-    return vertices
+    return numpy.array(vertices)
 
 class Graph :
     def __init__(self,array) :
