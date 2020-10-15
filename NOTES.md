@@ -16,7 +16,7 @@ To read:
  - J. A. Hartigan et M. A. Wong, Algorithm AS 136 : a k-means clustering algorithm, Applied Statistics 28 (1979), 100–108.
  - Jir ́ı Matousek. On approximate geometric k-clustering. Discrete & Computational Geometry, 24(1):61–84, 2000.
 
-Reading:\
+Reading:
  
 Finished:
  - Ball, Geoffrey H., Hall, David J. (1965) Isodata: a method of data analysis and pattern classification, Stanford Research Institute, Menlo Park,United States. Office of Naval Research. Information Sciences Branch (https://apps.dtic.mil/dtic/tr/fulltext/u2/699616.pdf) *Nothing to get from*
