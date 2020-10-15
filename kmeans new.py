@@ -8,9 +8,12 @@ class AgregGraph(Graph) : #Children class of Graph, for this specific algorithm
         for seed in range(k-2) :#Adding the node the furthest away from the barycentre
         #TODO: a seed can be chosen multiple times
             seeds.append(max(self.nodes,key=lambda n : sum([n.vertices[s.id].length for s in seeds])))
-        return seeds
+        return [seed.id for seed in seeds]#Return a list of ids
     
-    def agreg(self,seeds,k) :#Agregation of nodes around the seeds
+    def agreg(self,seeds) :#Agregation of nodes around the seeds
+        k = len(seeds)#Number of clusters
+        #Associating ids to the corresponding nodes
+        seeds = [self.nodes[seed] for seed in seeds]
         #Creating k clusters, each containing a different seed
         self.pools = [Pool(i) for i in range(k)]
         for i in range(k) :
@@ -61,13 +64,18 @@ def mykmeans(k,graph) :#Main function
     workgraph = AgregGraph(graph)#Creating an Graph object corresponding to the given graph
     seeds = workgraph.baseseeds(k)
     allseeds = list()
+    count = 0
     while set(seeds) not in allseeds :#While the seeds change on each iteration, creating new clusters from them
         logging.debug(str(allseeds))#debug
         allseeds.append(set(seeds))
+        #New graph to work on
         workgraph = AgregGraph(graph)
-        workgraph.agreg(seeds,k)
-        seeds = [pool.center for pool in workgraph.pools]#Re-defining seeds as the centers of just created clusters
+        workgraph.agreg(seeds)
+        seeds = [pool.center.id for pool in workgraph.pools]#Re-defining seeds as the centers of just created clusters
+        count += 1
+        logging.info(f'Loops: {count}')
     return [[node.id for node in pool.nodes] for pool in workgraph.pools]
 
-logging.basicConfig(filename='resources/kmeans.log', level=logging.DEBUG)
+logging.basicConfig(filename='resources/kmeans.log', level=logging.INFO)
+logging.info("-------------New execution-------------")
 #graph = numpy.array(genweightgraph(n,-100,100))#debug
