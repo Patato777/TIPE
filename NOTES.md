@@ -12,18 +12,20 @@ TODO:
  - tests
 
 To read:
- - R. Forgy, Cluster Analysis of Multivariate Data : Efficiency versus Interpretability of Classification, Biometrics (1965), n°21, 768–769
  - E. Diday, The dynamic clusters method in nonhierarchical clustering, International Journal of Computer & Information Sciences 2 (1973), n°1, 61–88.
  - J. A. Hartigan et M. A. Wong, Algorithm AS 136 : a k-means clustering algorithm, Applied Statistics 28 (1979), 100–108.
  - Jir ́ı Matousek. On approximate geometric k-clustering. Discrete & Computational Geometry, 24(1):61–84, 2000.
 
- Reading:
- - Stuart P. Lloyd. Least squares quantization in pcm. IEEE Transactions on Information Theory, 28(2):129–136, 1982 https://web.stanford.edu/class/ee398a/handouts/papers/Lloyd%20-%20Least%20Squares%20Q%20in%20PCM.pdf
+Reading:\
  
- Finished:
+Finished:
  - Ball, Geoffrey H., Hall, David J. (1965) Isodata: a method of data analysis and pattern classification, Stanford Research Institute, Menlo Park,United States. Office of Naval Research. Information Sciences Branch (https://apps.dtic.mil/dtic/tr/fulltext/u2/699616.pdf) *Nothing to get from*
  - J. Macqueen, Some methods for classification and analysis of multivariate observations, In 5-th Berkeley Symposium on Mathematical Statistics and Probability, 1967, p. 281–297. https://www-m9.ma.tum.de/foswiki/pub/WS2010/CombOptSem/kMeans.pdf (p. 3) *The original definition of kmeans*
  - David Arthur and Sergei Vassilvitskii, k-means++: The Advantages of Careful Seeding, 2006 http://ilpubs.stanford.edu:8090/778/1/2006-13.pdf *An interesting way to chose base nodes*
+ - Stuart P. Lloyd. Least squares quantization in pcm. IEEE Transactions on Information Theory, 28(2):129–136, 1982 https://web.stanford.edu/class/ee398a/handouts/papers/Lloyd%20-%20Least%20Squares%20Q%20in%20PCM.pdf *Original kmeans algorithm, too focused on its particular physics problem*
  
 Paywall:
  - Leonard Kaufman et Peter J. Rousseeuw, Finding Groups in Data – An Introduction to Cluster Analysis, John Wiley & Sons, 1990
+
+Unavailable:
+ - R. Forgy, Cluster Analysis of Multivariate Data : Efficiency versus Interpretability of Classification, Biometrics (1965), n°21, 768–769 *One of the original kmeans algorithm*
