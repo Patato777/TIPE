@@ -5,14 +5,16 @@ class Map:#Graphic interface
     def __init__(self,canvas,minc,maxc):
         self.canvas = canvas
         self.canvas.pack()
-        corners,img = self.choosemap(minc,maxc)#Coord of the corners of the map and the corresponding picture
+        corners,img = self.choosemap(minc,maxc)#Coord of the corners ((maxong,minlat),(minlong,maxlat)) of the map and the corresponding picture
         logging.debug(str((corners,corners[0][0])))
         self.img = PhotoImage(file=f'.{os.sep}resources{os.sep}{img}')
         self.imgh,self.imgw = self.img.height(),self.img.width()#Size of the picture
         #Displaying the map
         self.canvas.config(height=self.imgh, width=self.imgw)
         self.id = self.canvas.create_image(self.imgw//2,self.imgh//2,image=self.img)
-        self.scale = self.img.width()/(corners[0][0]-corners[1][0])#Scale of the map
+        #Scale of the map
+        self.latscale = self.imgw/(corners[1][1]-corners[0][1])
+        self.longscale = self.imgh/(corners[0][0]-corners[1][0])
         self.minlong,self.minlat = corners[1][0],corners[0][1]
 
     def choosemap(self,minc,maxc) :#To choose the best map, given the places
@@ -27,8 +29,7 @@ class Map:#Graphic interface
 
     def plot (self,long,lat,label) :#To plot a point
         #Calculating the coords on the picture
-        plong,plat = self.imgh-self.scale*(long - self.minlong), self.scale*(lat - self.minlat)
-        #TODO: Correct plat
+        plong,plat = self.imgh-self.longscale*(long - self.minlong), self.latscale*(lat - self.minlat)
         #Displaying the place among with its nam
         ov = self.canvas.create_oval(plat-1,plong-1,plat+1,plong+1)
         lbl = self.canvas.create_text(plat,plong+5,text=label)
@@ -38,7 +39,7 @@ class Map:#Graphic interface
         for elem in node :
             self.canvas.itemconfig(elem,fill=color)
 
-class Population:#The class of the nodes
+class Population:#The class of the nodes (population is a list of couples)
     def __init__(self,population) :
         self.pop = population
         #The most extreme coords
