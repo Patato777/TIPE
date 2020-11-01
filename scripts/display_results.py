@@ -21,10 +21,12 @@ class Map:#Graphic interface
         logging.debug(str((minc,maxc)))
         with open(f'.{os.sep}resources{os.sep}dimmap.txt') as f :
             mapindex = eval(f.read())
-        included = lambda corners : minc[0]>corners[1][0] and minc[1]>corners[0][1] and maxc[0]<corners[0][0] and maxc[1]<corners[1][1]
+        included = lambda corners : minc[0]>=corners[1][0] and minc[1]>=corners[0][1] and maxc[0]<=corners[0][0] and maxc[1]<=corners[1][1]
         #Best map among those which contain all the points
         possible = [key for key in mapindex.keys() if included(key)]
-        bestmap = min(possible,key = lambda item : (item[1][0]-item[0][0])*(item[1][1]-item[0][1]))
+        logging.debug("Possible maps: "+str(possible))
+        logging.debug('Area: '+str([(item[1][0]-item[0][0])*(item[1][1]-item[0][1]) for item in possible]))
+        bestmap = min(possible,key = lambda item : (item[0][0]-item[1][0])*(item[1][1]-item[0][1]))
         return bestmap,mapindex[bestmap]
 
     def plot (self,long,lat,label) :#To plot a point
