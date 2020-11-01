@@ -1,13 +1,15 @@
 from tkinter import *
 import os,logging
 
+dirname = os.path.dirname(__file__)
+
 class Map:#Graphic interface
     def __init__(self,canvas,minc,maxc):
         self.canvas = canvas
         self.canvas.pack()
         corners,img = self.choosemap(minc,maxc)#Coord of the corners ((maxong,minlat),(minlong,maxlat)) of the map and the corresponding picture
         logging.debug(str((corners,corners[0][0])))
-        self.img = PhotoImage(file=f'.{os.sep}resources{os.sep}{img}')
+        self.img = PhotoImage(file=dirname+f'{os.sep}resources{os.sep}{img}')
         self.imgh,self.imgw = self.img.height(),self.img.width()#Size of the picture
         #Displaying the map
         self.canvas.config(height=self.imgh, width=self.imgw)
@@ -19,7 +21,7 @@ class Map:#Graphic interface
 
     def choosemap(self,minc,maxc) :#To choose the best map, given the places
         logging.debug(str((minc,maxc)))
-        with open(f'.{os.sep}resources{os.sep}dimmap.txt') as f :
+        with open(dirname+f'{os.sep}resources{os.sep}dimmap.txt') as f :
             mapindex = eval(f.read())
         included = lambda corners : minc[0]>=corners[1][0] and minc[1]>=corners[0][1] and maxc[0]<=corners[0][0] and maxc[1]<=corners[1][1]
         #Best map among those which contain all the points
@@ -56,11 +58,4 @@ class Main:
         self.map = Map(Canvas(self.root),self.pop.min,self.pop.max)
         self.root.update()
 
-logging.basicConfig(filename='resources/display.log', level=logging.DEBUG)
-""">>> main = Main	([(50,0),(45,5)])
-[(50, 0), (45, 5)] (45, 0)
-(45, 0) (50, 5)
->>> main.map.plot(50,0,'foo')
-(2, 3)
->>> main.map.canvas.coords(2)
-[-3599.4087922449867, 4.713, -3597.4087922449867, 6.713]"""
+logging.basicConfig(filename=dirname+'/resources/display.log', level=logging.DEBUG)
