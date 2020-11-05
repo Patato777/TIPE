@@ -10,6 +10,7 @@ kmeans: choix des centres de départ : CAH ou kmeans++ ou méthode déjà progra
 TODO:
  - base seeds: plusieurs méthodes: kmeans++, CAH, random, "baseseeds"
  - tests
+ - rename scripts to delete space characters
 
 To read:
  - E. Diday, The dynamic clusters method in nonhierarchical clustering, International Journal of Computer & Information Sciences 2 (1973), n°1, 61–88.
