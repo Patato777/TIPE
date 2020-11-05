@@ -6,7 +6,7 @@ Resources I used:
     - Wikipédia:
       - Wikipedia contributors. K-means clustering. Wikipedia, The Free Encyclopedia. November 1, 2020, 22:18 UTC. Available at: https://en.wikipedia.org/w/index.php?title=K-means_clustering&oldid=986607189. Accessed November 5, 2020.
     - Developpez.com
-      - khayyam90. Les algorithmes génétiques. Developpez.com. August 25, 2005. Available at: https://khayyam.developpez.com/articles/algo/genetic/. Accessed November 5, 2020.
+      - Pierre Schwartz. Les algorithmes génétiques. Developpez.com. August 25, 2005. Available at: https://khayyam.developpez.com/articles/algo/genetic/. Accessed November 5, 2020.
 
   - Papers:
     - J. Macqueen, Some methods for classification and analysis of multivariate observations, In 5-th Berkeley Symposium on Mathematical Statistics and Probability, 1967, p. 281–297. Available at: https://www-m9.ma.tum.de/foswiki/pub/WS2010/CombOptSem/kMeans.pdf
