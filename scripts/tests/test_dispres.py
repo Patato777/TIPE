@@ -6,3 +6,5 @@ f.close()
 main = Main(cities)
 for city in cities:
 	main.map.plot(city[0],city[1],'foo')
+
+main.root.mainloop()
