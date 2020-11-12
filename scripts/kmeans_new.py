@@ -1,15 +1,23 @@
-import logging
-from graph import *
+import logging,os,random
+from scripts.graph import *
+
+dirname = os.path.dirname(__file__)
 
 class AgregGraph(Graph) : #Children class of Graph, for this specific algorithm
-    def baseseeds(self,k) :#Choosing the seeds for kmeans
+    def baseseeds1(self,k) :#Choosing the seeds for kmeans
         seeds = list()
         seeds.extend(max(self.vertices,key=lambda v : v.length).between)#Beginning with the 2 most distant nodes 
         for seed in range(k-2) :#Adding the node the furthest away from the barycentre
         #TODO: a seed can be chosen multiple times
             seeds.append(max(self.nodes,key=lambda n : sum([n.vertices[s.id].length for s in seeds])))
+        for s in seeds :
+            assert seeds.count(s) == 1
         return [seed.id for seed in seeds]#Return a list of ids
     
+    def baseseeds(self,k) :
+        seeds = random.choices(self.nodes,k=k)
+        return [seed.id for seed in seeds]
+
     def agreg(self,seeds) :#Agregation of nodes around the seeds
         k = len(seeds)#Number of clusters
         #Associating ids to the corresponding nodes
@@ -21,7 +29,7 @@ class AgregGraph(Graph) : #Children class of Graph, for this specific algorithm
             self.pools[i].center = seeds[i]
             for node in self.nodes :
                 if node.id != seeds[i].id :
-                    del node.free_vertices[seeds[i].id]
+                    del node.free_vertices[seeds[i].id]#TODO: Wa da fuk?
         #Adding one node to each cluster each time
         for augment in range(k) :
             new_nodes = list()
@@ -60,8 +68,8 @@ class Pool :#Class of clusters
     def dist_to_node(self,node) :#The distance to a node #TODO: use this instead of centers during aggregation
         return sum([node.vertices[pnode.id].length for pnode in self.nodes])
 
-def mykmeans(k,graph) :#Main function
-    workgraph = AgregGraph(graph)#Creating an Graph object corresponding to the given graph
+def mykmeans(k,array) :#Main function
+    workgraph = AgregGraph(array)#Creating an Graph object corresponding to the given graph
     seeds = workgraph.baseseeds(k)
     allseeds = list()
     count = 0
@@ -69,13 +77,13 @@ def mykmeans(k,graph) :#Main function
         logging.debug(str(allseeds))#debug
         allseeds.append(set(seeds))
         #New graph to work on
-        workgraph = AgregGraph(graph)
+        workgraph = AgregGraph(array)
         workgraph.agreg(seeds)
         seeds = [pool.center.id for pool in workgraph.pools]#Re-defining seeds as the centers of just created clusters
         count += 1
         logging.info(f'Loops: {count}')
     return [[node.id for node in pool.nodes] for pool in workgraph.pools]
 
-logging.basicConfig(filename='resources/kmeans.log', level=logging.INFO)
+logging.basicConfig(filename=dirname+'/resources/kmeans.log', level=logging.INFO)
 logging.info("-------------New execution-------------")
 #graph = numpy.array(genweightgraph(n,-100,100))#debug

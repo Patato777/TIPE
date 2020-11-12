@@ -2,6 +2,10 @@ from tkinter import *
 import os,logging
 
 dirname = os.path.dirname(__file__)
+COLORS = [f'#00{hex(x)[2:].zfill(2)}{hex(255-x)[2:].zfill(2)}' for x in range(255)]\
+        +[f'#{hex(x)[2:].zfill(2)}{hex(255-x)[2:].zfill(2)}00' for x in range(255)]\
+        +[f'#{hex(255-x)[2:].zfill(2)}00{hex(x)[2:].zfill(2)}' for x in range(255)]
+
 
 class Map:#Graphic interface
     def __init__(self,canvas,minc,maxc):
@@ -57,5 +61,12 @@ class Main:
         self.pop = Population(population)
         self.map = Map(Canvas(self.root),self.pop.min,self.pop.max)
         self.root.update()
+
+    def dispool(self,pools):
+        self.pop.pools = [[self.pop.pop[k] for k in pool] for pool in pools]
+        for k,pool in enumerate(self.pop.pools):
+            color = COLORS[k*765//len(pools)]
+            for node in pool:
+                self.map.colorise(self.map.plot(node[0],node[1],'foo'),color)
 
 logging.basicConfig(filename=dirname+'/resources/display.log', level=logging.DEBUG)
