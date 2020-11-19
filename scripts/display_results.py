@@ -47,6 +47,11 @@ class Map:#Graphic interface
         for elem in node :
             self.canvas.itemconfig(elem,fill=color)
 
+    def highlight(node) :
+        coords = self.canvas.coords(node[0])
+        ov = self.canvas.create_oval(coords[0]-3,coords[1]-3,coords[2]+3,coords[3]+3)
+        return ov
+
 class Population:#The class of the nodes (population is a list of couples)
     def __init__(self,population) :
         self.pop = population
