@@ -42,6 +42,10 @@ class Map:#Graphic interface
         ov = self.canvas.create_oval(plat-1,plong-1,plat+1,plong+1)
         lbl = self.canvas.create_text(plat,plong+5,text=label)
         return ov,lbl
+    
+    def highlight (self,node) :
+        coords = self.canvas.coords(node[0])
+        return self.canvas.create_oval(coords[0]-3,coords[1]-3,coords[2]+3,coords[3]+3)
 
     def colorise (self, node, color):#To change the color of a point
         for elem in node :
