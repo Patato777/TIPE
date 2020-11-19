@@ -1,4 +1,4 @@
-import logging,os,random
+import logging,os,random,time
 from scripts.graph import *
 
 dirname = os.path.dirname(__file__)
@@ -31,7 +31,7 @@ class AgregGraph(Graph) : #Children class of Graph, for this specific algorithm
                 if node.id != seeds[i].id :
                     del node.free_vertices[seeds[i].id]#TODO: Wa da fuk?
         #Adding one node to each cluster each time
-        for augment in range(k) :
+        for augment in range(len(self.nodes)//k-1) :
             new_nodes = list()
             for pool in self.pools :
                 logging.debug(str(pool.center.free_vertices))#debug
@@ -59,6 +59,9 @@ class AgregGraph(Graph) : #Children class of Graph, for this specific algorithm
         pool = max((pool1,pool2),key=lambda p : p.dist_to_node(node))
         pool.new_node = self.nodes[min(pool.center.free_vertices,key=lambda i : pool.center.free_vertices[i].length)]
 
+    def calc_dist (self) :
+        return sum([pool.weight() for pool in self.pools])
+    
 class Pool :#Class of clusters
     def __init__(self,nb) :
         self.id = nb
@@ -68,10 +71,14 @@ class Pool :#Class of clusters
     def dist_to_node(self,node) :#The distance to a node #TODO: use this instead of centers during aggregation
         return sum([node.vertices[pnode.id].length for pnode in self.nodes])
 
+    def weight(self) :
+        return sum([sum([node1.vertices[node2.id].length for node2 in self.nodes]) for node1 in self.nodes])
+
 def mykmeans(k,array) :#Main function
     workgraph = AgregGraph(array)#Creating an Graph object corresponding to the given graph
     seeds = workgraph.baseseeds(k)
     allseeds = list()
+    pools = list()
     count = 0
     while set(seeds) not in allseeds :#While the seeds change on each iteration, creating new clusters from them
         logging.debug(str(allseeds))#debug
@@ -80,10 +87,11 @@ def mykmeans(k,array) :#Main function
         workgraph = AgregGraph(array)
         workgraph.agreg(seeds)
         seeds = [pool.center.id for pool in workgraph.pools]#Re-defining seeds as the centers of just created clusters
+        pools.append(([[node.id for node in pool.nodes] for pool in workgraph.pools],workgraph.calc_dist()))
         count += 1
         logging.info(f'Loops: {count}')
-    return [[node.id for node in pool.nodes] for pool in workgraph.pools]
+    return min(pools,key=lambda t : t[1])
 
-logging.basicConfig(filename=dirname+'/resources/kmeans.log', level=logging.INFO)
-logging.info("-------------New execution-------------")
+logging.basicConfig(filename=dirname+'/resources/kmeans.log', level=logging.DEBUG)
+logging.info(f"-------------New execution {time.asctime()}-------------")
 #graph = numpy.array(genweightgraph(n,-100,100))#debug
