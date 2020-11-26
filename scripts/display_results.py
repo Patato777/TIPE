@@ -53,17 +53,17 @@ class Map:#Graphic interface
         return ov
 
 class Population:#The class of the nodes (population is a list of couples)
-    def __init__(self,population) :
-        self.pop = population
+    def __init__(self,population,names) :
+        self.pop = [(coord[0],coord[1],names[k]) for k,coord in enumerate(population)]
         #The most extreme coords
         self.min = (min(self.pop,key = lambda item : item[0])[0],min(self.pop,key = lambda item : item[1])[1])
         self.max = (max(self.pop,key = lambda item : item[0])[0],max(self.pop,key = lambda item : item[1])[1])
         logging.debug(str((self.pop,self.min)))
         
 class Main:
-    def __init__(self,population):
+    def __init__(self,population,names):
         self.root = Tk()
-        self.pop = Population(population)
+        self.pop = Population(population,names)
         self.map = Map(Canvas(self.root),self.pop.min,self.pop.max)
         self.root.update()
 
@@ -72,6 +72,6 @@ class Main:
         for k,pool in enumerate(self.pop.pools):
             color = COLORS[k*765//len(pools)]
             for node in pool:
-                self.map.colorise(self.map.plot(node[0],node[1],'foo'),color)
+                self.map.colorise(self.map.plot(node[0],node[1],node[2][0]),color)
 
 logging.basicConfig(filename=dirname+'/resources/display.log', level=logging.DEBUG)
