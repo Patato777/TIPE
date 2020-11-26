@@ -1,0 +1,5 @@
+##Config file
+<kmeans>
+BASESEEDS = 'random_bs'
+DISTTONODE = 'dist_to_node'
+</kmeans>

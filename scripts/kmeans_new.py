@@ -2,9 +2,15 @@ import logging,os,random,time
 from scripts.graph import *
 
 dirname = os.path.dirname(__file__)
+with open(dirname+'/resources/config') as f :
+    text = f.read()
+    beginning = text.find('\n',text.find('<kmeans>'))
+    end = text.find('</kmeans>')
+    config = text[beginning:end]
+    exec(config)
 
 class AgregGraph(Graph) : #Children class of Graph, for this specific algorithm
-    def baseseeds1(self,k) :#Choosing the seeds for kmeans
+    def custom_bs(self,k) :#Choosing the seeds for kmeans
         seeds = list()
         seeds.extend(max(self.vertices,key=lambda v : v.length).between)#Beginning with the 2 most distant nodes 
         for seed in range(k-2) :#Adding the node the furthest away from the barycentre
@@ -14,7 +20,7 @@ class AgregGraph(Graph) : #Children class of Graph, for this specific algorithm
             assert seeds.count(s) == 1
         return [seed.id for seed in seeds]#Return a list of ids
     
-    def baseseeds(self,k) :
+    def random_bs(self,k) :
         seeds = random.choices(self.nodes,k=k)
         return [seed.id for seed in seeds]
 
@@ -36,7 +42,8 @@ class AgregGraph(Graph) : #Children class of Graph, for this specific algorithm
             for pool in self.pools :
                 logging.debug(str(pool.center.free_vertices))#debug
                 #Adding the nearest node from the center of the pool
-                pool.new_node = self.nodes[min(pool.center.free_vertices,key=lambda i : pool.center.free_vertices[i].length)]
+                free_nodes = [self.nodes[i] for i in pool.center.free_vertices]
+                pool.new_node = min(free_nodes,key=eval(f'pool.{DISTTONODE}'))
                 logging.debug(str([nod.id for nod in pool.nodes]))#debug
                 #Eliminating the connection to the other nodes
                 for node in self.nodes :
@@ -57,7 +64,7 @@ class AgregGraph(Graph) : #Children class of Graph, for this specific algorithm
     def conflict (self, pool1,pool2) :#If 2 clusters try to aggregate the same node
         node = pool1.new_node
         pool = max((pool1,pool2),key=lambda p : p.dist_to_node(node))
-        pool.new_node = self.nodes[min(pool.center.free_vertices,key=lambda i : pool.center.free_vertices[i].length)]
+        pool.new_node = min(self.nodes,key=eval(f'pool.{DISTTONODE}'))
 
     def calc_dist (self) :
         return sum([pool.weight() for pool in self.pools])
@@ -71,12 +78,15 @@ class Pool :#Class of clusters
     def dist_to_node(self,node) :#The distance to a node #TODO: use this instead of centers during aggregation
         return sum([node.vertices[pnode.id].length for pnode in self.nodes])
 
+    def to_center(self,node) : #The distance between the center and a node
+        return self.center.free_vertices[node.id].length
+
     def weight(self) :
         return sum([sum([node1.vertices[node2.id].length for node2 in self.nodes]) for node1 in self.nodes])
 
 def mykmeans(k,array) :#Main function
     workgraph = AgregGraph(array)#Creating an Graph object corresponding to the given graph
-    seeds = workgraph.baseseeds(k)
+    seeds = eval(f'workgraph.{BASESEEDS}')(k)
     allseeds = list()
     pools = list()
     count = 0
