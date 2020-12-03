@@ -1,5 +1,5 @@
 ##Config file
 <kmeans>
-BASESEEDS = 'random_bs'
+BASESEEDS = 'kmpp'
 DISTTONODE = 'dist_to_node'
 </kmeans>

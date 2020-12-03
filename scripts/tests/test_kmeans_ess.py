@@ -22,13 +22,9 @@ dist = dist_table
 array = numpy.array(dist)
 #print(array)
 poolsl = list()
-param = 1
+param = 10
 for k in range(param) :
-    try :
-        poolsl.append(mykmeans(7,array))
-    except Exception as error:
-        print(error)
-        continue
+    poolsl.append(mykmeans(7,array))
     print(f'In progress: {100*k/param}%')
 print('Completed!')
 bestpools = min(poolsl,key=lambda t:t[1])

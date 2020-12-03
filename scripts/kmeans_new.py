@@ -1,5 +1,6 @@
 import logging,os,random,time
 from scripts.graph import *
+import scripts.baseseeds as bs
 
 dirname = os.path.dirname(__file__)
 with open(dirname+'/resources/config') as f :
@@ -10,20 +11,6 @@ with open(dirname+'/resources/config') as f :
     exec(config)
 
 class AgregGraph(Graph) : #Children class of Graph, for this specific algorithm
-    def custom_bs(self,k) :#Choosing the seeds for kmeans
-        seeds = list()
-        seeds.extend(max(self.vertices,key=lambda v : v.length).between)#Beginning with the 2 most distant nodes 
-        for seed in range(k-2) :#Adding the node the furthest away from the barycentre
-        #TODO: a seed can be chosen multiple times
-            seeds.append(max(self.nodes,key=lambda n : sum([n.vertices[s.id].length for s in seeds])))
-        for s in seeds :
-            assert seeds.count(s) == 1
-        return [seed.id for seed in seeds]#Return a list of ids
-    
-    def random_bs(self,k) :
-        seeds = random.choices(self.nodes,k=k)
-        return [seed.id for seed in seeds]
-
     def agreg(self,seeds) :#Agregation of nodes around the seeds
         k = len(seeds)#Number of clusters
         #Associating ids to the corresponding nodes
@@ -86,7 +73,7 @@ class Pool :#Class of clusters
 
 def mykmeans(k,array) :#Main function
     workgraph = AgregGraph(array)#Creating an Graph object corresponding to the given graph
-    seeds = eval(f'workgraph.{BASESEEDS}')(k)
+    seeds = eval(f'bs.{BASESEEDS}')(workgraph,k)
     allseeds = list()
     pools = list()
     count = 0
@@ -100,6 +87,7 @@ def mykmeans(k,array) :#Main function
         pools.append(([[node.id for node in pool.nodes] for pool in workgraph.pools],workgraph.calc_dist()))
         count += 1
         logging.info(f'Loops: {count}')
+    print(f'Total loops: {count}')
     return min(pools,key=lambda t : t[1])
 
 logging.basicConfig(filename=dirname+'/resources/kmeans.log', level=logging.DEBUG)
