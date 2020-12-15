@@ -2,10 +2,22 @@ from tkinter import *
 import os,logging
 
 dirname = os.path.dirname(__file__)
-COLORS = [f'#00{hex(x)[2:].zfill(2)}{hex(255-x)[2:].zfill(2)}' for x in range(255)]\
-        +[f'#{hex(x)[2:].zfill(2)}{hex(255-x)[2:].zfill(2)}00' for x in range(255)]\
-        +[f'#{hex(255-x)[2:].zfill(2)}00{hex(x)[2:].zfill(2)}' for x in range(255)]
+with open(dirname+'/resources/config') as f :
+    text = f.read()
+    beginning = text.find('\n',text.find('<display>'))
+    end = text.find('</display>')
+    config = text[beginning:end]
+    exec(config)
 
+def label(strg) :
+    if NAMES == 'full' :
+        return strg
+    if NAMES == 'initial' :
+        return strg[0]
+    if NAMES == 'name' :
+        return strg.split(' (')[0]
+    if NAMES == 'ZIP' :
+        return strg.split(' (')[1][:-1]
 
 class Map:#Graphic interface
     def __init__(self,canvas,minc,maxc):
@@ -72,6 +84,6 @@ class Main:
         for k,pool in enumerate(self.pop.pools):
             color = COLORS[k*765//len(pools)]
             for node in pool:
-                self.map.colorise(self.map.plot(node[0],node[1],node[2][0]),color)
+                self.map.colorise(self.map.plot(node[0],node[1],label(node[2])),color)
 
 logging.basicConfig(filename=dirname+'/resources/display.log', level=logging.DEBUG)

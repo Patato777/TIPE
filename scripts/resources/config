@@ -1,5 +1,12 @@
 ##Config file
 <kmeans>
-BASESEEDS = 'kmpp'
+BASESEEDS = 'cah'
 DISTTONODE = 'dist_to_node'
 </kmeans>
+
+<display>
+NAMES='ZIP'
+COLORS = [f'#00{hex(x)[2:].zfill(2)}{hex(255-x)[2:].zfill(2)}' for x in range(255)]\
+        +[f'#{hex(x)[2:].zfill(2)}{hex(255-x)[2:].zfill(2)}00' for x in range(255)]\
+        +[f'#{hex(255-x)[2:].zfill(2)}00{hex(x)[2:].zfill(2)}' for x in range(255)]
+</display>
