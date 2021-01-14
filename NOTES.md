@@ -27,7 +27,7 @@ To read:
  - Jir ́ı Matousek. On approximate geometric k-clustering. Discrete & Computational Geometry, 24(1):61–84, 2000.
 
 Reading:
- - D.E Goldberg and K. Deb. A comparative analysis of selection schemes used in genetic algorithms. In G.J.E. Rawlins, editor, Foundations of Genetic Algorithms , pages 69{93. Morgan Kaufmann, 1991.
+ - Genetic Algorithms for the TSP "In another classic problem in Statistics, called Cluster Analysis, which consists of obtaining the optimal classification of a set of individuals characterized by any number of variables, Lozano et al. (1996) developed one method which used the genetic crossover and mutation operators, related with path representation" p.19
 
 Finished:
  - Ball, Geoffrey H., Hall, David J. (1965) Isodata: a method of data analysis and pattern classification, Stanford Research Institute, Menlo Park,United States. Office of Naval Research. Information Sciences Branch (https://apps.dtic.mil/dtic/tr/fulltext/u2/699616.pdf) *Nothing to get from*
@@ -44,6 +44,7 @@ Finished:
 	"(For more technical comparisons of different selection methods, see Goldberg and Deb 1991, Bäck and Hoffmeister 1991, de la Maza and Tidor 1993, and Hancock 1994.)"
 	"Schaffer et al. found that the best settings for population size, crossover rate, and mutation rate were independent of the problem in their test suite. These settings were similar to those found by Grefenstette:population size 20–30, crossover rate 0.75–0.95, and mutation rate 0.005–0.01." *A really good summary about GAs* 
  - Peter J. B. Hancock, An Empirical Comparison of Selection Methods in Evolutionary Algorithms *A comparision between the main selection methods, using a simple example*
+ - D.E Goldberg and K. Deb. A comparative analysis of selection schemes used in genetic algorithms. In G.J.E. Rawlins, editor, Foundations of Genetic Algorithms , pages 69-93. Morgan Kaufmann, 1991. *A analytical comparison between the main selection methods*
 
 Paywall:
  - Leonard Kaufman et Peter J. Rousseeuw, Finding Groups in Data – An Introduction to Cluster Analysis, John Wiley & Sons, 1990
@@ -57,6 +58,9 @@ Différentes méthodes de sélection (wheel, avec/sans sigma scaling et windowin
 Avec/sans élitisme
 3D plot du meilleur résultat (en moyenne ?) en fonction de la probabilité de mutation et de crossover
 Paramètres : P(crossover),P(mutation),taille de pop
+Permutation operator
+
+Crossover : partially mapping or variation with subtour; cycle (better on TSP); position based
 ### Using a 1D-array of the nodes, the position indicating their pools
 
 1. Generate initial population by shuffling interval [|1;n|]
