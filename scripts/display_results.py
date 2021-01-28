@@ -55,16 +55,16 @@ class Map:#Graphic interface
         lbl = self.canvas.create_text(plat,plong+5,text=label)
         return ov,lbl
 
-    def colorise (self, node, color):#To change the color of a point
-        for elem in node :
+    def colorise (self, vertex, color):#To change the color of a point
+        for elem in vertex :
             self.canvas.itemconfig(elem,fill=color)
 
-    def highlight(node) :
-        coords = self.canvas.coords(node[0])
+    def highlight(vertex) :
+        coords = self.canvas.coords(vertex[0])
         ov = self.canvas.create_oval(coords[0]-3,coords[1]-3,coords[2]+3,coords[3]+3)
         return ov
 
-class Population:#The class of the nodes (population is a list of couples)
+class Population:#The class of the vertices (population is a list of couples)
     def __init__(self,population,names) :
         self.pop = [(coord[0],coord[1],names[k]) for k,coord in enumerate(population)]
         #The most extreme coords
@@ -83,7 +83,7 @@ class Main:
         self.pop.pools = [[self.pop.pop[k] for k in pool] for pool in pools]
         for k,pool in enumerate(self.pop.pools):
             color = COLORS[k*765//len(pools)]
-            for node in pool:
-                self.map.colorise(self.map.plot(node[0],node[1],label(node[2])),color)
+            for vertex in pool:
+                self.map.colorise(self.map.plot(vertex[0],vertex[1],label(vertex[2])),color)
 
 logging.basicConfig(filename=dirname+'/resources/display.log', level=logging.DEBUG)

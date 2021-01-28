@@ -11,47 +11,47 @@ with open(dirname+'/resources/config') as f :
     exec(config)
 
 class AgregGraph(Graph) : #Children class of Graph, for this specific algorithm
-    def agreg(self,seeds) :#Agregation of nodes around the seeds
+    def agreg(self,seeds) :#Agregation of vertices around the seeds
         k = len(seeds)#Number of clusters
-        #Associating ids to the corresponding nodes
-        seeds = [self.nodes[seed] for seed in seeds]
+        #Associating ids to the corresponding vertices
+        seeds = [self.vertices[seed] for seed in seeds]
         #Creating k clusters, each containing a different seed
         self.pools = [Pool(i) for i in range(k)]
         for i in range(k) :
-            self.pools[i].nodes.append(seeds[i])
+            self.pools[i].vertices.append(seeds[i])
             self.pools[i].center = seeds[i]
-            for node in self.nodes :
-                if node.id != seeds[i].id :
-                    del node.free_vertices[seeds[i].id]#TODO: Wa da fuk?
-        #Adding one node to each cluster each time
-        for augment in range(len(self.nodes)//k-1) :
-            new_nodes = list()
+            for vertex in self.vertices :
+                if vertex.id != seeds[i].id :
+                    del vertex.free_edges[seeds[i].id]#TODO: Wa da fuk?
+        #Adding one vertex to each cluster each time
+        for augment in range(len(self.vertices)//k-1) :
+            new_vertices = list()
             for pool in self.pools :
-                logging.debug(str(pool.center.free_vertices))#debug
-                #Adding the nearest node from the center of the pool
-                free_nodes = [self.nodes[i] for i in pool.center.free_vertices]
-                pool.new_node = min(free_nodes,key=eval(f'pool.{DISTTONODE}'))
-                logging.debug(str([nod.id for nod in pool.nodes]))#debug
-                #Eliminating the connection to the other nodes
-                for node in self.nodes :
+                logging.debug(str(pool.center.free_edges))#debug
+                #Adding the nearest vertex from the center of the pool
+                free_vertices = [self.vertices[i] for i in pool.center.free_edges]
+                pool.new_vertex = min(free_vertices,key=eval(f'pool.{DISTTOVERTEX}'))
+                logging.debug(str([nod.id for nod in pool.vertices]))#debug
+                #Eliminating the connection to the other vertices
+                for vertex in self.vertices :
                     try :
-                        if node.id != pool.new_node.id :
-                            del node.free_vertices[pool.new_node.id]
+                        if vertex.id != pool.new_vertex.id :
+                            del vertex.free_edges[pool.new_vertex.id]
                     except Exception as error :#TODO: Why does it throw that f***g error
-                        logging.debug(f'error:{error}, node:{node.id}, new node:{pool.new_node.id}, node.free vertices:{node.free_vertices.keys()}, new_node.free vertices:{pool.new_node.free_vertices.keys()}')
-                while pool.new_node in new_nodes :#It probably shouldn't happen... (I think?)
-                    #Anyway, if 2 clusters try to aggregate the same node
-                    self.conflict(pool,pool.new_node.pool)
+                        logging.debug(f'error:{error}, vertex:{vertex.id}, new vertex:{pool.new_vertex.id}, vertex.free edges:{vertex.free_edges.keys()}, new_vertex.free edges:{pool.new_vertex.free_edges.keys()}')
+                while pool.new_vertex in new_vertices :#It probably shouldn't happen... (I think?)
+                    #Anyway, if 2 clusters try to aggregate the same vertex
+                    self.conflict(pool,pool.new_vertex.pool)
                     logging.debug("C'est une boucle infinie MDR")#debug
-                new_nodes.append(pool.new_node)
-                pool.new_node.pool = pool
-                pool.nodes.append(pool.new_node)
-                pool.center = min(pool.nodes,key = lambda n : pool.dist_to_node(n))#Re-defining the center of the pool
+                new_vertices.append(pool.new_vertex)
+                pool.new_vertex.pool = pool
+                pool.vertices.append(pool.new_vertex)
+                pool.center = min(pool.vertices,key = lambda n : pool.dist_to_vertex(n))#Re-defining the center of the pool
     
-    def conflict (self, pool1,pool2) :#If 2 clusters try to aggregate the same node
-        node = pool1.new_node
-        pool = max((pool1,pool2),key=lambda p : p.dist_to_node(node))
-        pool.new_node = min(self.nodes,key=eval(f'pool.{DISTTONODE}'))
+    def conflict (self, pool1,pool2) :#If 2 clusters try to aggregate the same vertex
+        vertex = pool1.new_vertex
+        pool = max((pool1,pool2),key=lambda p : p.dist_to_vertex(vertex))
+        pool.new_vertex = min(self.vertices,key=eval(f'pool.{DISTTOVERTEX}'))
 
     def calc_dist (self) :
         return sum([pool.weight() for pool in self.pools])
@@ -60,16 +60,16 @@ class Pool :#Class of clusters
     def __init__(self,nb) :
         self.id = nb
         self.size = 0
-        self.nodes = list()
+        self.vertices = list()
 
-    def dist_to_node(self,node) :#The distance to a node #TODO: use this instead of centers during aggregation
-        return sum([node.vertices[pnode.id].length for pnode in self.nodes])
+    def dist_to_vertex(self,vertex) :#The distance to a vertex #TODO: use this instead of centers during aggregation
+        return sum([vertex.edges[pvertex.id].length for pvertex in self.vertices])
 
-    def to_center(self,node) : #The distance between the center and a node
-        return self.center.free_vertices[node.id].length
+    def to_center(self,vertex) : #The distance between the center and a vertex
+        return self.center.free_edges[vertex.id].length
 
     def weight(self) :
-        return sum([sum([node1.vertices[node2.id].length for node2 in self.nodes]) for node1 in self.nodes])
+        return sum([sum([vertex1.edges[vertex2.id].length for vertex2 in self.vertices]) for vertex1 in self.vertices])
 
 def mykmeans(k,array) :#Main function
     workgraph = AgregGraph(array)#Creating an Graph object corresponding to the given graph
@@ -84,7 +84,7 @@ def mykmeans(k,array) :#Main function
         workgraph = AgregGraph(array)
         workgraph.agreg(seeds)
         seeds = [pool.center.id for pool in workgraph.pools]#Re-defining seeds as the centers of just created clusters
-        pools.append(([[node.id for node in pool.nodes] for pool in workgraph.pools],workgraph.calc_dist()))
+        pools.append(([[vertex.id for vertex in pool.vertices] for pool in workgraph.pools],workgraph.calc_dist()))
         count += 1
         logging.info(f'Loops: {count}')
     print(f'Total loops: {count}')

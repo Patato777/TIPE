@@ -7,27 +7,27 @@ def verif(seeds) :
 
 def custom(self,k) :#Choosing the seeds for kmeans
     seeds = list()
-    seeds.extend(max(self.vertices,key=lambda v : v.length).between)#Beginning with the 2 most distant nodes 
-    for seed in range(k-2) :#Adding the node the furthest away from the barycentre
+    seeds.extend(max(self.edges,key=lambda v : v.length).between)#Beginning with the 2 most distant vertices 
+    for seed in range(k-2) :#Adding the vertex the furthest away from the barycentre
     #TODO: a seed can be chosen multiple times
-        seeds.append(max(self.nodes,key=lambda n : sum([n.vertices[s.id].length for s in seeds])))
+        seeds.append(max(self.vertices,key=lambda n : sum([n.edges[s.id].length for s in seeds])))
     verif(seeds)
     return [seed.id for seed in seeds]#Return a list of ids
 
 def rd(self,k) :
-    seeds = random.choices(self.nodes,k=k)
+    seeds = random.choices(self.vertices,k=k)
     return [seed.id for seed in seeds]
 
 def kmpp(self,k) :
-    seeds = [random.choice(self.nodes)]
+    seeds = [random.choice(self.vertices)]
     for s in range(k-1) :
-        weights = [min([n.vertices[sd.id].length for sd in seeds]) for n in self.nodes]
-        seed = random.choices(self.nodes,weights=weights)[0]
+        weights = [min([n.edges[sd.id].length for sd in seeds]) for n in self.vertices]
+        seed = random.choices(self.vertices,weights=weights)[0]
         seeds.append(seed)
     return [seed.id for seed in seeds]
 
 def cah(self,k):
-    dist_mat = array([[v.length for v in n.vertices.values()] for n in self.nodes])
+    dist_mat = array([[v.length for v in n.edges.values()] for n in self.vertices])
     all_dist = copy(dist_mat)
     clusters = {k:[k] for k in range(len(dist_mat))}
     for i in range(len(dist_mat)-k) :

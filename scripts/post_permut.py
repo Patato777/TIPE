@@ -12,26 +12,26 @@ def bettergraph(pools,dist) :
                 fpools,best = npools,weight
                 pools = fpools
                 for tpool in pools :
-                    for tnode in tpool :
+                    for tvertex in tpool :
                         try :
-                            assert tpool.count(tnode) == 1
+                            assert tpool.count(tvertex) == 1
                         except Exception as error :
-                            print(k,i,pool,node)
-                            print(tpool,tnode)
+                            print(k,i,pool,vertex)
+                            print(tpool,tvertex)
                             raise error
     return fpools, best
 
-def permut(node,nodpool,pools,dist) :
+def permut(vertex,vertpool,pools,dist) :
     best = calc_weight(pools,dist)
     fpools = pools.copy()
-    opools = [pool for pool in pools if pool!=nodpool]
+    opools = [pool for pool in pools if pool!=vertpool]
     for opool in opools : 
-        for onode in opool :
-            nodind,onodind = nodpool.index(node),opool.index(onode)
-            opool[onodind],nodpool[nodind] = nodpool[nodind],opool[onodind] 
+        for overtex in opool :
+            vertind,overtind = vertpool.index(vertex),opool.index(overtex)
+            opool[overtind],vertpool[vertind] = vertpool[vertind],opool[overtind] 
             weight = calc_weight(pools,dist)
             if weight < best : 
                 fpools = [pool.copy() for pool in pools]
                 best = weight
-            opool[onodind],nodpool[nodind] = nodpool[nodind],opool[onodind] 
+            opool[overtind],vertpool[vertind] = vertpool[vertind],opool[overtind] 
     return fpools, best

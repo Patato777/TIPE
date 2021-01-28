@@ -22,7 +22,7 @@ dist = dist_table
 array = numpy.array(dist)
 #print(array)
 poolsl = list()
-param = 10
+param = 1
 for k in range(param) :
     poolsl.append(mykmeans(7,array))
     print(f'In progress: {100*k/param}%')
