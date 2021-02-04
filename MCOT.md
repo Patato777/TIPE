@@ -16,6 +16,7 @@ Proposés à l'origine par John Holland en 1975 [4], ils ont été améliorés e
 Enfin, l'implémentation pratique d'un algorithme génétique, au-delà de la modélisation du problème, demande une réflexion sur la valeur des paramètres, notamment la probabilité de mutation, de croisement ou le nombre d'individus. Si le choix dépend du problème, des paramètres standards se sont très vites répandus, à la suite d'une étude de De Jong, sur une suite particulière, dès 1975. En 1986, Grefenstette proposa néanmoins, afin d'avoir des paramètres plus adapatés au problème étudié, l'utilisation de "méta-algorithmes génétiques", où la population évoluée serait les paramètres eux-mêmes. *683 mots*
 
 ### Problématique retenue (50 mots)
+On souhaite adapter et implémenter plusieurs algorithmes pour regrouper n points donnés par leurs distances aux autres en k classes d'autant de points, en minimisant la somme des distances au sein de chaque classe et comparer leurs performances. *39 mots*
 
 ### Objectifs du TIPE (100 mots)
 
