@@ -23,7 +23,7 @@ def recfunc(col, lig, p, k, table, rest, tot, prof):
         beg, end = table[0, col - 1] + 1, col * p + 1
         tot += total(table[:, col - 1])
     else:
-        beg, end = table[lig - 1, col] + 1, k * (p - 1) + lig + 1
+        beg, end = table[lig - 1, col] + 1, k * (p - 1) + lig
     res = list()
     for i in range(beg, end):
         if i in rest:
@@ -35,9 +35,9 @@ def recfunc(col, lig, p, k, table, rest, tot, prof):
     try:
         return min(res, key=lambda r: r[1])
     except Exception as error:
-        print(f'lig={lig},col={col},beg={beg},end={end},rest={rest},table={table}')
-        raise error
+        return table,tot**2
+    # print(f'lig={lig},col={col},beg={beg},end={end},rest={rest},table={table}')
 
 
-test = func(30, 6)
+test = func(20, 5)
 print(test)
