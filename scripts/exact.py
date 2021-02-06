@@ -1,42 +1,43 @@
 import os
+import numpy as np
 
 with open(os.path.abspath('./tests/resources/Table_distances_Essonne_py.txt'), 'r') as f:
     dist_mat = eval(f.read())
 
 
-def transpositions(n, k):
-    return [[i + (n // k) * x, j + (n // k) * y] for i in range(n // k) for j in range(n // k) for x
-            in range(k) for y in range(x + 1, k)]
+def total(pool):
+    return sum([dist_mat[i][j] for c, i in enumerate(pool) for j in pool[c + 1:]])
 
 
-def distance(c, s):
-    return sum([dist_mat[i][j] for i in range(c, c + s) for j in range(i + 1, c + s)])
+def func(n, k):
+    table = np.zeros((n // k, k), dtype=int)
+    return recfunc(0, 1, n // k, k, table, list(range(1, n)), 0, 0)
 
 
-def transposer(repartition, transposition):
-    n, k = len(repartition[0]), len(repartition[1])
-    repartition2 = [repartition[0].copy(), repartition[1].copy()]
-    repartition2[0][transposition[0]], repartition2[0][transposition[1]] = repartition2[0][transposition[1]], \
-                                                                           repartition2[0][transposition[0]]
-    repartition[1][transposition[0] // k] = distance(transposition[0] // k, n // k)
-    repartition[1][transposition[1] // k] = distance(transposition[1] // k, n // k)
-    return repartition2
+def recfunc(col, lig, p, k, table, rest, tot, prof):
+    table2 = np.copy(table)
+    if lig == 0 and col == len(table[0]) - 1:
+        table2[:, col] = rest
+        return table2, tot + total(table[:, col])
+    elif lig == 0:
+        beg, end = table[0, col - 1] + 1, col * p + 1
+        tot += total(table[:, col - 1])
+    else:
+        beg, end = table[lig - 1, col] + 1, k * (p - 1) + lig + 1
+    res = list()
+    for i in range(beg, end):
+        if i in rest:
+            rest2 = rest.copy()
+            rest2.remove(i)
+            table2[lig, col] = i
+            rec = recfunc(col + (lig + 1) // p, (lig + 1) % p, p, k, table2, rest2, tot, prof + 1)
+            res.append(rec)
+    try:
+        return min(res, key=lambda r: r[1])
+    except Exception as error:
+        print(f'lig={lig},col={col},beg={beg},end={end},rest={rest},table={table}')
+        raise error
 
 
-def meilleure_rep(prof, pere, transp):
-    if prof < 2:
-        fils = list()
-        for t in transp:
-            if prof == 0:
-                print('yo')
-            fils.append(transposer(pere, t))
-            fils.append(meilleure_rep(prof + 1, fils[-1], transp))
-            # print(fils,pere)
-        return min([pere] + fils, key=lambda r: sum(r[1]))
-    return pere
-
-
-transp = transpositions(len(dist_mat), 14)
-init = [list(range(len(dist_mat))), [distance(i, 14) for i in range(len(dist_mat) // 14)]]
-m = meilleure_rep(0, init, transp)
-print(m[0] == list(range(len(m[0]))))
+test = func(30, 6)
+print(test)
