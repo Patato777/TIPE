@@ -5,8 +5,16 @@ DISTTOVERTEX = 'dist_to_vertex'
 </kmeans>
 
 <display>
-NAMES='ZIP'
+NAMES = 'ZIP'
 COLORS = [f'#00{hex(x)[2:].zfill(2)}{hex(255-x)[2:].zfill(2)}' for x in range(255)]\
         +[f'#{hex(x)[2:].zfill(2)}{hex(255-x)[2:].zfill(2)}00' for x in range(255)]\
         +[f'#{hex(255-x)[2:].zfill(2)}00{hex(x)[2:].zfill(2)}' for x in range(255)]
 </display>
+
+<genetic>
+POSIZE = 100
+SELECTION = 'wheel'
+CROSS =
+MUTATION =
+MUT_PROB = 0.05
+</genetic>
