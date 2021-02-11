@@ -29,8 +29,9 @@ class Distances:
 
 
 class Chromosome:
-    def __init__(self, chrom):
+    def __init__(self, chrom, n):
         self.id = chrom
+        self.size = n
 
 
 class Main:
@@ -50,9 +51,9 @@ class Main:
         selection = op.Selection(self.fitness, self.pop, self.params.SELECTION)
         for _ in range(self.params.POPSIZE // 2):
             p1, p2 = selection.select()
-            new_pop.id.extend(op.Cross(self.params.CROSS).cross(p1, p2))#TODO: define cross methods
+            new_pop.id.extend(op.Cross(self.params.CROSS).cross(p1, p2))
         for chrom in new_pop.id:
-            op.Mutation(self.params.MUTATION, self.params.MUT_PROB).mutate(chrom)#TODO: define mutation
+            op.Mutation(self.params.MUTATION, self.params.MUT_PROB).mutate(chrom)
         self.pop = new_pop
 
 
@@ -63,4 +64,4 @@ class Population:
         self.id = pop
 
     def gen_random(self, n, size):
-        self.id = [Chromosome(random.sample(list(range(n)), n)) for _ in range(size)]
+        self.id = [Chromosome(random.sample(list(range(n)), n), n) for _ in range(size)]
