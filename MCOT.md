@@ -23,7 +23,8 @@ Je me propose d'implémenter en Python :
 - un algorithme "exact", qui générerait exhaustivement toutes les solutions possibles pour déterminer la meilleure
 - un algorithme de kmeans, ainsi que plusieurs heuristiques pour le choix des points initiaux
 - un algorithme génétique, avec plusieurs opérateurs de sélection et de croisement
-- ainsi que potentiellement d'autres algorithmes plus simples\
+- ainsi que potentiellement d'autres algorithmes plus simples
+
 d'optimiser leurs paramètres, d'étudier leurs complexités et de comparer leurs performances, d'abord entre plusieurs variantes du même algorithme, puis entre les algorithmes, pour différentes configurations de points, notamment sur des données réelles, comme les villes de l'Essonne. *89 mots*
 
 ### Positionnement thématique
