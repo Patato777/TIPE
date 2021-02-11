@@ -19,8 +19,21 @@ Enfin, l'implémentation pratique d'un algorithme génétique, au-delà de la mo
 On souhaite adapter et implémenter plusieurs algorithmes pour regrouper n points donnés par leurs distances aux autres en k classes d'autant de points, en minimisant la somme des distances au sein de chaque classe et comparer leurs performances. *39 mots*
 
 ### Objectifs du TIPE (100 mots)
+Je me propose d'implémenter en Python :
+- un algorithme "exact", qui générerait exhaustivement toutes les solutions possibles pour déterminer la meilleure
+- un algorithme de kmeans, ainsi que plusieurs heuristiques pour le choix des points initiaux
+- un algorithme génétique, avec plusieurs opérateurs de sélection et de croisement
+- ainsi que potentiellement d'autres algorithmes plus simples
+d'optimiser leurs paramètres, d'étudier leurs complexités et de comparer leurs performances, d'abord entre plusieurs variantes du même algorithme, puis entre les algorithmes, pour différentes configurations de points, notamment sur des données réelles, comme les villes de l'Essonne. *89 mots*
+
+### Positionnement thématique
+- Choix du thème 1 : Informatique pratique
+- Choix du thème 2 : Mathématiques appliquées
+- Choix du thème 3 : Informatique théorique
 
 ### Mots clés
+- Français : Partitionnement, k-moyennes, algorithmes génétiques, graphe, optimisation
+- Anglais : Clustering, kmeans, genetic algorithls, graph, optimisation
 
 ### 5 à 10 références bibliographiques majeures
 [1] S. P. Lloyd, « Least square quantization in PCM », Bell Telephone Laboratories Paper\
