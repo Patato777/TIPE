@@ -1,3 +1,4 @@
+import configparser
 import os
 import random
 import numpy as np
@@ -8,13 +9,9 @@ dirname = os.path.dirname(__file__)
 
 class Params:
     def __init__(self):
-        with open(dirname + '/resources/config') as f:
-            text = f.read()
-            beginning = text.find('\n', text.find('<genetic>'))
-            end = text.find('</genetic>')
-            config = text[beginning:end]
-        for line in config.splitlines():
-            exec('self.' + line)
+        conf = configparser.ConfigParser()
+        conf.read(dirname + '/resources/config')
+        self.config = conf['genetic']
 
 
 class Distances:
@@ -40,7 +37,7 @@ class Main:
         self.distances = Distances(dist)
         self.n, self.k = n, k
         self.pop = Population()
-        self.pop.gen_random(n, self.params.POPSIZE)
+        self.pop.gen_random(n, int(self.params.config["POPSIZE"]))
 
     def fitness(self, chromosome):
         return self.distances.total(
@@ -48,12 +45,12 @@ class Main:
 
     def generation(self):
         new_pop = Population()
-        selection = op.Selection(self.fitness, self.pop, self.params.SELECTION)
-        for _ in range(self.params.POPSIZE // 2):
+        selection = op.Selection(self.fitness, self.pop, self.params.config["SELECTION"])
+        for _ in range(int(self.params.config["POPSIZE"]) // 2):
             p1, p2 = selection.select()
-            new_pop.id.extend(op.Cross(self.params.CROSS).cross(p1, p2))
+            new_pop.id.extend(op.Cross(self.params.config["CROSS"]).cross(p1, p2))
         for chrom in new_pop.id:
-            op.Mutation(self.params.MUTATION, self.params.MUT_PROB).mutate(chrom)
+            op.Mutation(self.params.config["MUTATION"], self.params.config["MUT_PROB"]).mutate(chrom)
         self.pop = new_pop
 
 

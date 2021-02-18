@@ -1,20 +1,17 @@
 ##Config file
-<kmeans>
-BASESEEDS = 'cah'
-DISTTOVERTEX = 'dist_to_vertex'
-</kmeans>
+[kmeans]
+BASESEEDS = cah
+DISTTOVERTEX = dist_to_vertex
 
-<display>
-NAMES = 'ZIP'
+[display]
+NAMES = ZIP
 COLORS = [f'#00{hex(x)[2:].zfill(2)}{hex(255-x)[2:].zfill(2)}' for x in range(255)]\
         +[f'#{hex(x)[2:].zfill(2)}{hex(255-x)[2:].zfill(2)}00' for x in range(255)]\
         +[f'#{hex(255-x)[2:].zfill(2)}00{hex(x)[2:].zfill(2)}' for x in range(255)]
-</display>
 
-<genetic>
+[genetic]
 POSIZE = 100
-SELECTION = 'wheel'
+SELECTION = wheel
 CROSS =
 MUTATION =
 MUT_PROB = 0.05
-</genetic>
