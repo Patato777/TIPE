@@ -33,8 +33,20 @@ class Cross(Operator):
         self.cross = cross_dic[cross]
 
     def pmx(self, chr1, chr2):
-        sub_beg, sub_end = sorted(random.sample(list(range(chr1.size)), 2))
-        # TODO: complete this
+        beg, end = sorted(random.sample(list(range(chr1.size)), 2))
+        sub1 = chr1.id[beg:end]
+        sub2 = chr2.id[beg:end]
+        logging.debug(str(chr1.id) + str(chr2.id) + str(sub1) + str(sub2))
+        off1b = [self.pmx_what_gene(chr1.id[pos], sub1, sub2) for pos in range(beg)]
+        off1e = [self.pmx_what_gene(chr1.id[pos], sub1, sub2) for pos in range(end, chr1.size)]
+        off2b = [self.pmx_what_gene(chr2.id[pos], sub2, sub1) for pos in range(beg)]
+        off2e = [self.pmx_what_gene(chr2.id[pos], sub2, sub1) for pos in range(end, chr1.size)]
+        return off1b + sub2 + off1e, off2b + sub1 + off2e
+
+    def pmx_what_gene(self, gene, sub1, sub2):
+        while gene in sub2:
+            gene = sub1[sub2.index(gene)]
+        return gene
 
 
 class Mutation(Operator):

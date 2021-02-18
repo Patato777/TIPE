@@ -46,9 +46,11 @@ class Main:
     def generation(self):
         new_pop = Population()
         selection = op.Selection(self.fitness, self.pop, self.params.config["SELECTION"])
+        cross = op.Cross(self.params.config["CROSS"])
         for _ in range(int(self.params.config["POPSIZE"]) // 2):
             p1, p2 = selection.select()
-            new_pop.id.extend(op.Cross(self.params.config["CROSS"]).cross(p1, p2))
+            off1, off2 = cross.cross(p1, p2)
+            new_pop.id.extend([Chromosome(off1, self.n), Chromosome(off2, self.n)])
         for chrom in new_pop.id:
             op.Mutation(self.params.config["MUTATION"], self.params.config["MUT_PROB"]).mutate(chrom)
         self.pop = new_pop
