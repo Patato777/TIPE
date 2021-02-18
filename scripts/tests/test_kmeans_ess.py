@@ -1,6 +1,7 @@
 from scripts.display_results import *
 from scripts.kmeans_new import *
 from scripts.post_permut import *
+import logging
 
 dirname = os.path.dirname(__file__)
 
@@ -24,11 +25,11 @@ poolsl = list()
 param = 1
 for k in range(param):
     poolsl.append(mykmeans(7, array))
-    print(f'In progress: {100 * k / param}%')
-print('Completed!')
+    logging.info(f'In progress: {100 * k / param}%')
+logging.info('Completed!')
 bestpools = min(poolsl, key=lambda t: t[1])
 betpools = bettergraph(bestpools[0], dist_table)
-print(betpools)
+logging.debug(betpools)
 pools = betpools[0]
 # print(pools)
 

@@ -95,10 +95,8 @@ def mykmeans(k, array):  # Main function
         pools.append(([[vertex.id for vertex in pool.vertices] for pool in workgraph.pools], workgraph.calc_dist()))
         count += 1
         logging.info(f'Loops: {count}')
-    print(f'Total loops: {count}')
+    #print(f'Total loops: {count}')
     return min(pools, key=lambda t: t[1])
 
-
-logging.basicConfig(filename=dirname + '/resources/kmeans.log', level=logging.DEBUG)
 logging.info(f"-------------New execution {time.asctime()}-------------")
 # graph = numpy.array(genweightgraph(n,-100,100))#debug

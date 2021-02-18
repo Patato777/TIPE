@@ -86,11 +86,9 @@ class Main:
 
     def dispool(self, pools):
         self.pop.pools = [[self.pop.pop[k] for k in pool] for pool in pools]
-        print(eval(config['COLORS']))
+        logging.debug(eval(config['COLORS']))
         for k, pool in enumerate(self.pop.pools):
             color = eval(config['COLORS'])[k * 765 // len(pools)]
             for vertex in pool:
                 self.map.colorise(self.map.plot(vertex[0], vertex[1], label(vertex[2])), color)
 
-
-logging.basicConfig(filename=dirname + '/resources/display.log', level=logging.DEBUG)
