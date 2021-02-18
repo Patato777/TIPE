@@ -1,9 +1,36 @@
-import scripts.genetic as gen
-import scripts.operators as op
 import logging
+import os
 
-c1 = gen.Chromosome([1, 2, 3, 4, 5, 6, 7, 8], 8)
-c2 = gen.Chromosome([2, 4, 6, 8, 1, 3, 5, 7], 8)
+import numpy
 
-cross = op.Cross('pmx')
-logging.info(cross.cross(c1, c2))
+import scripts.display_results as disp
+import scripts.genetic as gen
+
+dirname = os.path.dirname(__file__)
+with open(dirname + '/resources/Table_distances_Essonne_py.txt', 'r') as f:
+    dist_table = eval(f.read())
+
+with open(dirname + '/resources/Liste_pos_Essonne_py.txt', 'r') as f:
+    cities = eval(f.read())
+
+with open(dirname + '/resources/liste_essonne_py.txt') as f:
+    names = eval(f.read())
+
+pop = cities
+dist = dist_table
+
+ar = numpy.array(dist)
+
+main = gen.Main(ar, len(pop), 14)
+
+logging.info('---------- Genetic ----------')
+best = main.mainloop(1000)
+pools = [[c for c in best[14 * k:14 * (k + 1)]] for k in range(14)]
+
+logging.info(f'best: {best}')
+logging.info(pools)
+
+dmain = disp.Main(pop,names)
+dmain.dispool(pools)
+
+dmain.root.mainloop()
