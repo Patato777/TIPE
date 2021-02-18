@@ -55,8 +55,14 @@ class Main:
             off1, off2 = cross.cross(p1, p2)
             new_pop.id.extend([Chromosome(off1, self.n), Chromosome(off2, self.n)])
         for chrom in new_pop.id:
-            op.Mutation(self.params.config["MUTATION"], self.params.config["MUT_PROB"]).mutate(chrom)
+            op.Mutation(self.params.config["MUTATION"], float(self.params.config["MUT_PROB"])).mutate(chrom)
         self.pop = new_pop
+        
+    def mainloop(self, loops) :
+        for l in range(loops) :
+            self.generation()
+            logging.info(str(l))
+        return min([c.id for c in self.pop.id],key=lambda c : self.fitness(c))
 
 
 class Population:

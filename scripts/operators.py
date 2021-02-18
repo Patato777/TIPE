@@ -7,25 +7,40 @@ class Operator:
 
 
 class Selection(Operator):
-    def __init__(self, fit, pop, select, scale='linear_scal'):
+    def __init__(self, fit, pop, select, scale='inverse_scal', window=0):
         self.fitness = fit
         self.pop = pop
+        self.window = window
         if select == 'wheel':
             self.evaluate()
             self.select = self.wheel
         self.scale = eval(f'self.{scale}()')
 
     def evaluate(self):
-        for chrom in self.pop:
-            chrom.fit = self.fitness(chrom.id)
+        for chrom in self.pop.id:
+            chrom.fit = self.fitness(chrom.id) - self.window
 
     def wheel(self):
-        return random.choices(self.pop, weights=self.scale, k=2)
+        return random.choices(self.pop.id, weights=self.scale, k=2)
 
-    def linear_scal(self):
-        fits = [c.fit for c in self.pop]
+    def opp_scal(self):
+        fits = [c.fit for c in self.pop.id]
         tot = sum(fits)
-        return [1 - (f / tot) for f in fits]
+        return [tot - f for f in fits]
+
+    def inverse_scal(self):
+        return [1 / c.fit for c in self.pop.id]
+
+    def linear_scal(self):  # /!\ Needs windowing
+        return [-c.fit for c in self.pop.id]
+
+    def sigma_scal(self):
+        fits = [c.fit for c in self.pop.id]
+        tot = sum(fits)
+        mean = tot / len(fits)
+        std_dev = (sum([c.fit ** 2 for c in self.pop]) / len(fits) - mean) ** (1 / 2)
+        sigma = std_dev if std_dev else 1
+        return [1 + (mean - c.fit) / (2 * sigma) for c in self.pop.id]
 
 
 class Cross(Operator):
@@ -55,7 +70,6 @@ class Mutation(Operator):
         mut_dic = dict(swap=self.swap, insertion=self.insertion)
         self.prob = prob
         self.mutate = mut_dic[mut]
-        # depending on mut, define self.mutate(chrom)
 
     def swap(self, chrom):
         for gene in range(chrom.size):

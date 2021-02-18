@@ -10,8 +10,9 @@ COLORS = [f'#00{hex(x)[2:].zfill(2)}{hex(255-x)[2:].zfill(2)}' for x in range(25
         +[f'#{hex(255-x)[2:].zfill(2)}00{hex(x)[2:].zfill(2)}' for x in range(255)]
 
 [genetic]
-POSIZE = 100
+POPSIZE = 1000
 SELECTION = wheel
-CROSS =
-MUTATION =
+CROSS = pmx
+MUTATION = swap
 MUT_PROB = 0.05
+WINDOWING = -1
