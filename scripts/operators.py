@@ -45,7 +45,7 @@ class Selection(Operator):
 
 class Cross(Operator):
     def __init__(self, cross):
-        cross_dic = dict(pmx=self.pmx)
+        cross_dic = dict(pmx=self.pmx,cx=self.cx)
         self.cross = cross_dic[cross]
 
     def pmx(self, chr1, chr2):
@@ -63,6 +63,58 @@ class Cross(Operator):
         while gene in sub2:
             gene = sub1[sub2.index(gene)]
         return gene
+
+    def cx(self, chr1, chr2):
+        off1, off2 = [None] * chr1.size, [None] * chr2.size
+        rest1, rest2 = chr1.id.copy(), chr2.id.copy()
+        chrs = [(chr1.id,rest1),(chr2.id,rest2)]
+        for pos in range(chr1.size):
+            random.shuffle(chrs)
+            logging.debug(f'pos: {pos}')
+            if off1[pos] == None:
+                logging.debug('Is None')
+                g1, g2 = chrs[0][0][pos], chrs[1][0][pos]
+                off1[pos] = g1
+                off2[pos] = g2
+                try :
+                    chrs[0][1].remove(g1)
+                    chrs[1][1].remove(g2)
+                except Exception as error :
+                    logging.error(f'g1: {g1}, g2: {g2}, chrs: {chrs}, off1: {off1}, off2: {off2}')
+                    raise error
+                while g1 in chrs[0][1] or g1 in chrs[1][1]:
+                    logging.debug(f'g1: {g1},g2: {g2},chrs[0][1]: {chrs[0][1]},chrs[1][1]: {chrs[1][1]}')
+                    if g1 in chrs[0][1]:
+                        pos1 = chrs[0][0].index(g1)
+                        g2 = g1
+                        g1 = chrs[1][0][pos1]
+                        logging.debug(f'g1: {g1}, g2: {g2}, pos1: {pos1}')
+                        try :
+                            chrs[1][1].remove(g1)
+                            chrs[0][1].remove(g2)
+                        except Exception as error:
+                            logging.debug(f'off1: {off1}, off2: {off2}')
+                            logging.debug('g1 in chrs[0][1]')
+                            logging.error(f'chrs[1][1]: {chrs[1][1]},g2: {g2}')
+                            logging.error(f'chrs[0][1]: {chrs[1][1]},g1: {g1}')
+                            raise error
+                    else:
+                        pos1 = chrs[1][0].index(g1)
+                        g2 = g1
+                        g1 = chrs[0][0][pos1]
+                        logging.debug(f'g1: {g1}, g2: {g2}, pos1: {pos1}')
+                        try :
+                            chrs[1][1].remove(g2)
+                            chrs[0][1].remove(g1)
+                        except Exception as error:
+                            logging.debug(f'off1: {off1}, off2: {off2}')
+                            logging.debug('g1 in chrs[1][1]')
+                            logging.error(f'chrs[1][1]: {chrs[1][1]},g2: {g2}')
+                            logging.error(f'chrs[0][1]: {chrs[1][1]},g1: {g1}')
+                            raise error
+                    off1[pos1] = g1
+                    off2[pos1] = g2
+        return off1, off2
 
 
 class Mutation(Operator):
@@ -83,3 +135,8 @@ class Mutation(Operator):
                 place = random.choice(list(range(chrom.size)))
                 gene = chrom.id.pop(pos)
                 chrom.id.insert(place, gene)
+
+
+class Inversion(Operator):
+    def __init__(self, inv):
+        pass
