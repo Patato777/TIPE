@@ -29,9 +29,10 @@ class Distances:
 
 
 class Chromosome:
-    def __init__(self, chrom, n):
+    def __init__(self, chrom, n, psize):
         self.id = chrom
         self.size = n
+        self.psize = psize
 
 
 class Main:
@@ -39,8 +40,13 @@ class Main:
         self.params = Params()
         self.distances = Distances(dist)
         self.n, self.k = n, k
+        self.poolsize = n // k
         self.pop = Population()
-        self.pop.gen_random(n, int(self.params.config["POPSIZE"]))
+        self.pop.gen_random(n, n // k, int(self.params.config["POPSIZE"]))
+        self.elite = int(self.params.config["POPSIZE"]) * int(self.params.config["ELITISM"])
+        self.window = 0
+        if int(self.params.config["WINDOWING"]) >= 0:
+            self.worst_l = [0] * (int(self.params.config["WINDOWING"]) + 1)
 
     def fitness(self, chromosome):
         return self.distances.total(
@@ -48,13 +54,13 @@ class Main:
 
     def generation(self):
         new_pop = Population()
-        selection = op.Selection(self.fitness, self.pop, self.params.config["SELECTION"])
+        selection = op.Selection(self.fitness, self.pop, self.params.config["SELECTION"], self.window)
         cross = op.Cross(self.params.config["CROSS"])
         new_pop.id.extend(sorted(self.pop.id, key=lambda c: self.fitness(c.id))[:self.elite])
         for _ in range((int(self.params.config["POPSIZE"]) - self.elite) // 2):
             p1, p2 = selection.select()
             off1, off2 = cross.cross(p1, p2)
-            new_pop.id.extend([Chromosome(off1, self.n), Chromosome(off2, self.n)])
+            new_pop.id.extend([Chromosome(off1, self.n, self.poolsize), Chromosome(off2, self.n, self.poolsize)])
         for chrom in new_pop.id:
             op.Mutation(self.params.config["MUTATION"], float(self.params.config["MUT_PROB"])).mutate(chrom)
         self.pop = new_pop
@@ -72,5 +78,5 @@ class Population:
             pop = list()
         self.id = pop
 
-    def gen_random(self, n, size):
-        self.id = [Chromosome(random.sample(list(range(n)), n), n) for _ in range(size)]
+    def gen_random(self, n, poolsize, size):
+        self.id = [Chromosome(random.sample(list(range(n)), n), n, poolsize) for _ in range(size)]

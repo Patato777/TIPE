@@ -30,7 +30,7 @@ pools = [[c for c in best[14 * k:14 * (k + 1)]] for k in range(14)]
 logging.info(f'best: {best}')
 logging.info(pools)
 
-dmain = disp.Main(pop,names)
+dmain = disp.Main(pop, names)
 dmain.dispool(pools)
 
 dmain.root.mainloop()
