@@ -1,7 +1,7 @@
 import configparser
+import logging
 import os
 import random
-import logging
 
 import numpy as np
 
@@ -64,12 +64,17 @@ class Main:
         for chrom in new_pop.id:
             op.Mutation(self.params.config["MUTATION"], float(self.params.config["MUT_PROB"])).mutate(chrom)
         self.pop = new_pop
-        
-    def mainloop(self, loops) :
-        for l in range(loops) :
+
+    def mainloop(self, loops):
+        for loop in range(loops):
             self.generation()
-            logging.info(str(l))
-        return min([c.id for c in self.pop.id],key=lambda c : self.fitness(c))
+            if int(self.params.config["WINDOWING"]) >= 0:
+                worst = max([self.fitness(c.id) for c in self.pop.id])
+                worst_l = worst_l[1:] + [worst]
+                self.window = max(worst_l)
+            logging.info(str(loop))
+            logging.info(min([self.fitness(c.id) for c in self.pop.id]))
+        return min([c.id for c in self.pop.id], key=lambda c: self.fitness(c))
 
 
 class Population:
