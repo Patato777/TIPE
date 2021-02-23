@@ -50,7 +50,8 @@ class Main:
         new_pop = Population()
         selection = op.Selection(self.fitness, self.pop, self.params.config["SELECTION"])
         cross = op.Cross(self.params.config["CROSS"])
-        for _ in range(int(self.params.config["POPSIZE"]) // 2):
+        new_pop.id.extend(sorted(self.pop.id, key=lambda c: self.fitness(c.id))[:self.elite])
+        for _ in range((int(self.params.config["POPSIZE"]) - self.elite) // 2):
             p1, p2 = selection.select()
             off1, off2 = cross.cross(p1, p2)
             new_pop.id.extend([Chromosome(off1, self.n), Chromosome(off2, self.n)])
