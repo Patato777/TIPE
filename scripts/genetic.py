@@ -43,7 +43,7 @@ class Main:
         self.poolsize = n // k
         self.pop = Population()
         self.pop.gen_random(n, n // k, int(self.params.config["POPSIZE"]))
-        self.elite = int(self.params.config["POPSIZE"]) * int(self.params.config["ELITISM"])
+        self.elite = int(int(self.params.config["POPSIZE"]) * float(self.params.config["ELITISM"]))
         self.window = 0
         if int(self.params.config["WINDOWING"]) >= 0:
             self.worst_l = [0] * (int(self.params.config["WINDOWING"]) + 1)
@@ -54,27 +54,31 @@ class Main:
 
     def generation(self):
         new_pop = Population()
-        selection = op.Selection(self.fitness, self.pop, self.params.config["SELECTION"], self.window)
+        selection = op.Selection(self.pop, self.params.config["SELECTION"], self.params.config["SCALE"],
+                                 self.window)
         cross = op.Cross(self.params.config["CROSS"])
-        new_pop.id.extend(sorted(self.pop.id, key=lambda c: self.fitness(c.id))[:self.elite])
+        new_pop.id.extend(sorted(self.pop.id, key=lambda c: c.fitness)[:self.elite])
+        logging.debug([c.fitness for c in new_pop.id])
         for _ in range((int(self.params.config["POPSIZE"]) - self.elite) // 2):
             p1, p2 = selection.select()
             off1, off2 = cross.cross(p1, p2)
             new_pop.id.extend([Chromosome(off1, self.n, self.poolsize), Chromosome(off2, self.n, self.poolsize)])
-        for chrom in new_pop.id:
+        for chrom in new_pop.id[self.elite:]:
             op.Mutation(self.params.config["MUTATION"], float(self.params.config["MUT_PROB"])).mutate(chrom)
         self.pop = new_pop
 
     def mainloop(self, loops):
         for loop in range(loops):
-            self.generation()
+            for c in self.pop.id:
+                c.fitness = self.fitness(c.id)
             if int(self.params.config["WINDOWING"]) >= 0:
-                worst = max([self.fitness(c.id) for c in self.pop.id])
-                worst_l = worst_l[1:] + [worst]
-                self.window = max(worst_l)
+                worst = max([c.fitness for c in self.pop.id])
+                self.worst_l = self.worst_l[1:] + [worst]
+                self.window = max(self.worst_l)
+            self.generation()
             logging.info(str(loop))
-            logging.info(min([self.fitness(c.id) for c in self.pop.id]))
-        return min([c.id for c in self.pop.id], key=lambda c: self.fitness(c))
+            logging.info(min([c.fitness for c in self.pop.id]))
+        return min([c for c in self.pop.id], key=lambda c: c.fitness).id
 
 
 class Population:
