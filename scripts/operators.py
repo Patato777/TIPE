@@ -1,5 +1,6 @@
 import logging
 import random
+from functools import reduce
 
 
 class Operator:
@@ -7,18 +8,19 @@ class Operator:
 
 
 class Selection(Operator):
-    def __init__(self, fit, pop, select, scale='inverse_scal', window=0):
-        self.fitness = fit
+    def __init__(self, pop, select, scale, window):
         self.pop = pop
         self.window = window
         if select == 'wheel':
             self.evaluate()
             self.select = self.wheel
-        self.scale = eval(f'self.{scale}()')
+        scale_dic = dict(opp=self.opp_scal, inverse=self.inverse_scal, linear=self.linear_scal, sigma=self.sigma_scal)
+        self.scale = scale_dic[scale]()
+        logging.debug(self.scale)
 
     def evaluate(self):
         for chrom in self.pop.id:
-            chrom.fit = self.fitness(chrom.id) - self.window
+            chrom.fit = chrom.fitness - self.window
 
     def wheel(self):
         return random.choices(self.pop.id, weights=self.scale, k=2)
@@ -45,7 +47,7 @@ class Selection(Operator):
 
 class Cross(Operator):
     def __init__(self, cross):
-        cross_dic = dict(pmx=self.pmx, cx=self.cx, er=self.er_2_off, mpx=self.mpx, ap=self.ap)
+        cross_dic = dict(pmx=self.pmx, cx=self.cx, er=self.er_2_off, mpx=self.mpx, ap=self.ap, my_vr=self.my_vr)
         self.cross = cross_dic[cross]
 
     def pmx(self, chr1, chr2):
@@ -155,6 +157,27 @@ class Cross(Operator):
             if chrs2[k % 2].id[k // 2] not in off2:
                 off2.append(chrs2[k % 2].id[k // 2])
         return off1, off2
+
+    def my_vr(self, chr1, chr2):
+        pools1 = [set(chr1.id[chr1.psize * p:chr1.psize * (p + 1)]) for p in range(chr1.size // chr1.psize)]
+        pools2 = [set(chr2.id[chr2.psize * p:chr2.psize * (p + 1)]) for p in range(chr2.size // chr2.psize)]
+        common_sub1 = [reduce(lambda s1, s2: s1.union(s2), [pool1.intersection(pool2) for pool1 in pools1 if
+                                                            len(pool1.intersection(pool2)) > 1], set()) for pool2 in
+                       pools2]
+        common_sub2 = [reduce(lambda s1, s2: s1.union(s2), [pool1.intersection(pool2) for pool2 in pools2 if
+                                                            len(pool1.intersection(pool2)) > 1], set()) for pool1 in
+                       pools1]
+        logging.debug(common_sub1)
+        logging.debug(common_sub2)
+        unused = reduce(lambda s1, s2: s1.intersection(s2), [set(chr1.id).difference(com) for com in common_sub1])
+        for g in unused:
+            voisin = [pool for pool in pools1 if g in pool][0].union([pool for pool in pools2 if g in pool][0])
+            pool1 = max(range(chr1.size // chr1.psize), key=lambda p: len(voisin.intersection(common_sub1[p])))
+            pool2 = max(range(chr1.size // chr1.psize), key=lambda p: len(voisin.intersection(common_sub2[p])))
+            common_sub1[pool1].add(g)
+            common_sub2[pool2].add(g)
+        return reduce(lambda off, pool: off + list(pool), common_sub1, []), reduce(lambda off, pool: off + list(pool),
+                                                                                   common_sub2, [])
 
 
 def voisins(liste, k):
