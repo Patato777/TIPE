@@ -24,7 +24,7 @@ ar = numpy.array(dist)
 main = gen.Main(ar, len(pop), 14)
 
 logging.info('---------- Genetic ----------')
-best = main.mainloop(1000)
+best = main.mainloop(1000, False)
 pools = [[c for c in best[14 * k:14 * (k + 1)]] for k in range(14)]
 
 logging.info(f'best: {best}')

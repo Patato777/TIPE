@@ -67,18 +67,26 @@ class Main:
             op.Mutation(self.params.config["MUTATION"], float(self.params.config["MUT_PROB"])).mutate(chrom)
         self.pop = new_pop
 
-    def mainloop(self, loops):
+    def mainloop(self, loops, insider):
         for loop in range(loops):
             for c in self.pop.id:
                 c.fitness = self.fitness(c.id)
+            cfitness = [c.fitness for c in self.pop.id]
             if int(self.params.config["WINDOWING"]) >= 0:
-                worst = max([c.fitness for c in self.pop.id])
+                worst = max(cfitness)
                 self.worst_l = self.worst_l[1:] + [worst]
                 self.window = max(self.worst_l)
+            if insider:
+                yield cfitness, loop
             self.generation()
+            for c in self.pop.id:
+                c.fitness = self.fitness(c.id)
             logging.info(str(loop))
             logging.info(min([c.fitness for c in self.pop.id]))
-        return min([c for c in self.pop.id], key=lambda c: c.fitness).id
+        if insider:
+            yield [c.fitness for c in self.pop.id], loop + 1
+        else:
+            return min([c for c in self.pop.id], key=lambda ch: ch.fitness).id
 
 
 class Population:
