@@ -1,10 +1,10 @@
 # Mise en cohérence des objectifs du TIPE
 ## Titre, motivation et ancrage au thème
 ### Titre de votre sujet TIPE (20 mots)
-Répartition de lieux en groupes de taille égale en minimisant la distance intra-groupe *13 mots*
+Clustering de villes en groupes de tailles égales pour un tournoi *11 mots*
 ### Quelle est votre motivation pour le choix du sujet ? (50 mots)
 Il s'agit d'un sujet que j'avais déjà eu l'occasion de rencontrer et qui m'avait plu. Le grand nombre de manières de l'aborder ainsi que les problèmes de "méta-optimisation" des paramètres des algorithmes m'ont parus particulièrement attrayants. *36 mots*
-### En quoi votre étude s'inscrit-elle dans le thème de l'année ? (50 mots) 
+### En quoi votre étude s'inscrit-elle dans le thème de l'année ? (50 mots) 
 Optimiser la partition d'un ensemble de lieux pour minimiser la distance au sein d'un groupe donné permet de réduire l'empreinte environnementale lors de déplacements entre ces lieux, mais aussi, par exemple, d'optimiser la distribution de ressources lors du choix de branchement à un point d'arrivée ou un autre. *48 mots*
 
 ## Mise en Cohérence des Objectifs du TIPE
