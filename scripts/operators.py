@@ -20,7 +20,7 @@ class Selection(Operator):
 
     def evaluate(self):
         for chrom in self.pop.id:
-            chrom.fit = chrom.fitness - self.window
+            chrom.fit = chrom.fitness
 
     def wheel(self):
         return random.choices(self.pop.id, weights=self.scale, k=2)
