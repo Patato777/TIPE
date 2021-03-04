@@ -18,21 +18,24 @@ class Selection(Operator):
 
     def evaluate(self):
         for chrom in self.pop.id:
-            chrom.fit = self.fitness(chrom.id) - self.window
+            chrom.fit = self.fitness(chrom.id)
 
     def wheel(self):
         return random.choices(self.pop.id, weights=self.scale, k=2)
 
     def opp_scal(self):
         fits = [c.fit for c in self.pop.id]
-        tot = sum(fits)
+        tot = sum(fits) - self.window
         return [tot - f for f in fits]
 
     def inverse_scal(self):
-        return [1 / c.fit for c in self.pop.id]
+        if self.window:
+            return [1 / c.fit - 1 / self.window for c in self.pop.id]
+        else:
+            return [1 / c.fit for c in self.pop.id]
 
     def linear_scal(self):  # /!\ Needs windowing
-        return [-c.fit for c in self.pop.id]
+        return [self.window - c.fit for c in self.pop.id]
 
     def sigma_scal(self):
         fits = [c.fit for c in self.pop.id]
@@ -40,7 +43,10 @@ class Selection(Operator):
         mean = tot / len(fits)
         std_dev = (sum([c.fit ** 2 for c in self.pop]) / len(fits) - mean) ** (1 / 2)
         sigma = std_dev if std_dev else 1
-        return [1 + (mean - c.fit) / (2 * sigma) for c in self.pop.id]
+        if self.window:
+            return [max((self.window - c.fit) / (2 * sigma), 0) for c in self.pop.id]
+        else:
+            return [max(1 + (mean - c.fit) / (2 * sigma), 0) for c in self.pop.id]
 
 
 class Cross(Operator):
