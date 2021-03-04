@@ -40,7 +40,7 @@ class Selection(Operator):
         fits = [c.fit for c in self.pop.id]
         tot = sum(fits)
         mean = tot / len(fits)
-        std_dev = (sum([c.fit ** 2 for c in self.pop]) / len(fits) - mean) ** (1 / 2)
+        std_dev = (sum([c.fit ** 2 for c in self.pop.id]) / len(fits) - mean) ** (1 / 2)
         sigma = std_dev if std_dev else 1
         return [1 + (mean - c.fit) / (2 * sigma) for c in self.pop.id]
 
