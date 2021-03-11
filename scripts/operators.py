@@ -16,6 +16,8 @@ class Selection(Operator):
             self.select = self.wheel
         scale_dic = dict(opp=self.opp_scal, inverse=self.inverse_scal, linear=self.linear_scal, sigma=self.sigma_scal)
         self.scale = scale_dic[scale]()
+        if max(self.scale) == 0:
+            self.scale = [1] * len(self.scale)
         logging.debug(self.scale)
 
     def evaluate(self):
@@ -23,7 +25,11 @@ class Selection(Operator):
             chrom.fit = chrom.fitness
 
     def wheel(self):
-        return random.choices(self.pop.id, weights=self.scale, k=2)
+        try:
+            return random.choices(self.pop.id, weights=self.scale, k=2)
+        except Exception as error:
+            logging.error(f'window: {self.window}, scale: {self.scale}')
+            raise error
 
     def opp_scal(self):
         fits = [c.fit for c in self.pop.id]
@@ -32,7 +38,7 @@ class Selection(Operator):
 
     def inverse_scal(self):
         if self.window:
-            return [1 / c.fit - 1 / self.window for c in self.pop.id]
+            return [max(1 / c.fit - 1 / self.window, 0) for c in self.pop.id]
         else:
             return [1 / c.fit for c in self.pop.id]
 
