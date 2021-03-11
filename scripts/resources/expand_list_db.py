@@ -1,0 +1,34 @@
+import sqlite3
+
+conn = sqlite3.connect(input('DB?'))
+curs = conn.cursor()
+
+table = input('Table?')
+
+col = None
+
+print(curs.execute(f'SELECT COUNT(*) FROM {table}').fetchone())
+
+curs.execute(f'DROP TABLE IF EXISTS new_{table}')
+curs.execute(f'CREATE TABLE new_{table} AS SELECT * FROM {table} LIMIT 1')
+curs.execute(f'DELETE from new_{table}')
+
+print('New table created')
+
+for k, row in enumerate(curs.execute(f'SELECT * FROM {table}')):
+    if col == None:
+        col = [i for i, s in enumerate(row) if type(s) == str and s.startswith('[')][0]
+        print(col)
+    other_keys1, other_keys2 = row[:col], row[col + 1:]
+    val_list = eval(row[col])
+    curs.executemany(f'INSERT INTO new_{table} VALUES ({",".join("?" * len(row))})',
+                         [(*other_keys1, str(val), *other_keys2) for val in val_list])
+
+conn.commit()
+
+print(k)
+print(curs.execute(f'SELECT COUNT(*) FROM new_{table}').fetchone())
+print(curs.execute(f'SELECT * FROM new_{table}').fetchall())
+
+curs.close()
+conn.close()
