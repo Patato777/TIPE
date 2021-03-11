@@ -72,6 +72,9 @@ class Main:
             for c in self.pop.id:
                 c.fitness = self.fitness(c.id)
             cfitness = [c.fitness for c in self.pop.id]
+            if min(cfitness) == max(cfitness) or (
+                    loop > (50 + 5 * abs(int(self.params.config["WINDOWING"]))) and min(cfitness) > 2100000):
+                break
             if int(self.params.config["WINDOWING"]) >= 0:
                 worst = max(cfitness)
                 self.worst_l = self.worst_l[1:] + [worst]
@@ -81,12 +84,14 @@ class Main:
             self.generation()
             for c in self.pop.id:
                 c.fitness = self.fitness(c.id)
-            logging.info(str(loop))
-            logging.info(min([c.fitness for c in self.pop.id]))
+            best = min([c for c in self.pop.id], key=lambda ch: ch.fitness)
+            if loop % 50 == 0:
+                logging.info(str(loop))
+                logging.info(best.fitness)
         if insider:
             yield [c.fitness for c in self.pop.id], loop + 1
         else:
-            return min([c for c in self.pop.id], key=lambda ch: ch.fitness).id
+            return best.id
 
 
 class Population:
