@@ -35,8 +35,8 @@ def rec(values, param):
             logging.debug(f"INSERT INTO {config['DATASET_NAME']} VALUES ({'?,' * (len(values) + 1)}?)")
             for fits, generation in chroms_fits:
                 logging.debug((*values, str(fits), str(generation)))
-                curs.execute(f"INSERT INTO {config['DATASET_NAME']} VALUES ({'?,' * (len(values) + 1)}?)",
-                             (*values, str(fits), str(generation)))
+                curs.executemany(f"INSERT INTO {config['DATASET_NAME']} VALUES ({'?,' * (len(values) + 1)}?)",
+                                 [(*values, str(f), str(generation)) for f in fits])
             conn.commit()
     else:
         for value in params[param[0]]:
