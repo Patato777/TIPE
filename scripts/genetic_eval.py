@@ -22,22 +22,28 @@ conn = sqlite3.connect(dirname + '/resources/genetic.db')
 curs = conn.cursor()
 
 params = eval(config["GEN_PARAMS"])
-curs.execute(f"CREATE TABLE {config['DATASET_NAME']} {(*params.keys(), 'scores', 'generation')}")
+curs.execute(f"CREATE TABLE IF NOT EXISTS {config['DATASET_NAME']} {(*params.keys(), 'scores', 'generation')}")
 logging.info(params)
 
 
 def rec(values, param):
     if not param:
+        logging.info(values)
         if not (values[3] == '-1' and values[5] == 'linear'):
-            logging.info(values)
-            gen_main = gen.Main(dist_table, int(config["DATALEN"]), int(config["POOLS_COUNT"]))
-            chroms_fits = gen_main.mainloop(int(config["LOOPS_COUNT"]), True)
-            logging.debug(f"INSERT INTO {config['DATASET_NAME']} VALUES ({'?,' * (len(values) + 1)}?)")
-            for fits, generation in chroms_fits:
-                logging.debug((*values, str(fits), str(generation)))
-                curs.executemany(f"INSERT INTO {config['DATASET_NAME']} VALUES ({'?,' * (len(values) + 1)}?)",
-                                 [(*values, str(f), str(generation)) for f in fits])
-            conn.commit()
+            cond = ' AND '.join([key + '="' + str(val) + '"' for key, val in zip(params.keys(), values) if
+                                 not (key == 'MUTATION' and conf['genetic']['MUT_PROB'] == '0')])
+            logging.debug(cond)
+            if not curs.execute(f"SELECT * FROM {config['DATASET_NAME']} WHERE {cond}").fetchone():
+                gen_main = gen.Main(dist_table, int(config["DATALEN"]), int(config["POOLS_COUNT"]))
+                chroms_fits = gen_main.mainloop(int(config["LOOPS_COUNT"]), True)
+                logging.debug(f"INSERT INTO {config['DATASET_NAME']} VALUES ({','.join('?' * (len(values) + 2))})")
+                for fits, generation in chroms_fits:
+                    logging.debug((*values, str(fits), str(generation)))
+                    curs.executemany(
+                        f"INSERT INTO {config['DATASET_NAME']} VALUES ({','.join('?' * (len(values) + 2))})",
+                        [(*values, str(f), str(generation)) for f in fits])
+                conn.commit()
+        logging.info('Done')
     else:
         for value in params[param[0]]:
             logging.debug((values, param))
