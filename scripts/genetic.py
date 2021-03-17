@@ -73,7 +73,8 @@ class Main:
                 c.fitness = self.fitness(c.id)
             cfitness = [c.fitness for c in self.pop.id]
             if min(cfitness) == max(cfitness) or (
-                    loop > (50 + 5 * abs(int(self.params.config["WINDOWING"]))) and min(cfitness) > 2100000):
+                    loop > (50 + 5 * abs(int(self.params.config["WINDOWING"]))) and min(cfitness) > 2100000) or (
+                    loop > 500 and min(cfitness) > 1700000):
                 break
             if int(self.params.config["WINDOWING"]) >= 0:
                 worst = max(cfitness)
