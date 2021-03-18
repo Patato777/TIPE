@@ -18,7 +18,7 @@ config = conf['gen_eval']
 with open(dirname + config["DATASET_PATH"], 'r') as datafile:
     dist_table = eval(datafile.read())
 
-db_journal = dirname + f'/resources/db_journal{config["DATASET_NAME"]}.txt'
+db_journal = dirname + f'/resources/db_journal_{config["DATASET_NAME"]}.txt'
 with open(db_journal, 'r') as j:
     done = j.read().splitlines()
 
