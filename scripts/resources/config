@@ -28,3 +28,5 @@ datalen = 196
 pools_count = 14
 loops_count = 1000
 
+[disp_gen]
+p_set = {'CROSS': 'pmx', 'MUTATION': 'swap', 'MUT_PROB': 0, 'WINDOWING': -1, 'ELITISM': 0, 'SCALE': 'opp']
