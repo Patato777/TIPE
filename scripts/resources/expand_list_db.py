@@ -18,6 +18,7 @@ print('New table created')
 for k, row in enumerate(curs.execute(f'SELECT * FROM {table}')):
     if col == None:
         col = [i for i, s in enumerate(row) if type(s) == str and s.startswith('[')][0]
+        col_name = curs.description[col][0]
         print(col)
     other_keys1, other_keys2 = row[:col], row[col + 1:]
     val_list = eval(row[col])
@@ -29,6 +30,10 @@ conn.commit()
 print(k)
 print(curs.execute(f'SELECT COUNT(*) FROM new_{table}').fetchone())
 print(curs.execute(f'SELECT * FROM new_{table}').fetchall())
+
+if input('Replace records? y/N').lower() == 'y' :
+    curs.execute(f'INSERT INTO {table} SELECT * FROM new_{table}')
+    curs.execute(f'DELETE from {table} WHERE {col_name} LIKE "[%]"')
 
 curs.close()
 conn.close()
