@@ -23,7 +23,7 @@ dataset_path = /tests/resources/Table_distances_Essonne_py.txt
 dataset_name = Essonne
 gen_params = {'CROSS': ['pmx', 'cx', 'er', 'mpx', 'ap', 'my_vr'], 'MUTATION': ['swap', 'insertion', 'sim'],\
 	'MUT_PROB': [0, 0.005, 0.01, 0.05, 0.1], 'WINDOWING': [-1, 0, 2, 5, 10],\
-	'ELITISM': [0, 0.001, 0.01, 0.1], 'SCALE': ['opp','inverse','linear', 'sigma']}
+	'ELITISM': [0, 0.001, 0.01, 0.1], 'SCALE': ['inverse','linear', 'sigma']}
 datalen = 196
 pools_count = 14
 loops_count = 1000
