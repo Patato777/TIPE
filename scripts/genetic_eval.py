@@ -18,6 +18,10 @@ config = conf['gen_eval']
 with open(dirname + config["DATASET_PATH"], 'r') as datafile:
     dist_table = eval(datafile.read())
 
+db_journal = dirname + f'/resources/db_journal{config["DATASET_NAME"]}.txt'
+with open(db_journal, 'r') as j:
+    done = j.read().splitlines()
+
 conn = sqlite3.connect(dirname + '/resources/genetic.db')
 curs = conn.cursor()
 
@@ -33,7 +37,10 @@ def rec(values, param):
             cond = ' AND '.join([key + '="' + str(val) + '"' for key, val in zip(params.keys(), values) if
                                  not (key == 'MUTATION' and conf['genetic']['MUT_PROB'] == '0')])
             logging.debug(cond)
-            if not curs.execute(f"SELECT * FROM {config['DATASET_NAME']} WHERE {cond}").fetchone():
+            if not (str(values) in done or curs.execute(
+                    f"SELECT * FROM {config['DATASET_NAME']} WHERE {cond}").fetchone()):
+                with open(db_journal, 'a') as j:
+                    j.writelines(f'\n{values}')
                 gen_main = gen.Main(dist_table, int(config["DATALEN"]), int(config["POOLS_COUNT"]))
                 chroms_fits = gen_main.mainloop(int(config["LOOPS_COUNT"]), True)
                 logging.debug(f"INSERT INTO {config['DATASET_NAME']} VALUES ({','.join('?' * (len(values) + 2))})")
