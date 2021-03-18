@@ -24,8 +24,7 @@ for k, row in enumerate(curs.execute(f'SELECT * FROM {table}')):
     val_list = eval(row[col])
     curs.executemany(f'INSERT INTO new_{table} VALUES ({",".join("?" * len(row))})',
                          [(*other_keys1, str(val), *other_keys2) for val in val_list])
-
-conn.commit()
+    conn.commit()
 
 print(k)
 print(curs.execute(f'SELECT COUNT(*) FROM new_{table}').fetchone())
