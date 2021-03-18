@@ -35,5 +35,8 @@ if input('Replace records? y/N').lower() == 'y' :
     curs.execute(f'INSERT INTO {table} SELECT * FROM new_{table}')
     curs.execute(f'DELETE from {table} WHERE {col_name} LIKE "[%]"')
 
+curs.execute(f'DROP TABLE new_{table}')
+conn.commit()
+             
 curs.close()
 conn.close()
