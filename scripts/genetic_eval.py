@@ -34,13 +34,9 @@ def rec(values, param):
     if not param:
         logging.info(values)
         if not (values[3] == '-1' and values[5] == 'linear'):
-            cond = ' AND '.join([key + '="' + str(val) + '"' for key, val in zip(params.keys(), values) if
-                                 not (key == 'MUTATION' and conf['genetic']['MUT_PROB'] == '0')])
-            logging.debug(cond)
-            if not (str(values) in done or curs.execute(
-                    f"SELECT * FROM {config['DATASET_NAME']} WHERE {cond}").fetchone()):
-                with open(db_journal, 'a') as j:
-                    j.writelines(f'\n{values}')
+            if not str(values) in done:
+                with open(db_journal, 'a') as journal:
+                    journal.writelines(f'\n{values}')
                 gen_main = gen.Main(dist_table, int(config["DATALEN"]), int(config["POOLS_COUNT"]))
                 chroms_fits = gen_main.mainloop(int(config["LOOPS_COUNT"]), True)
                 logging.debug(f"INSERT INTO {config['DATASET_NAME']} VALUES ({','.join('?' * (len(values) + 2))})")
