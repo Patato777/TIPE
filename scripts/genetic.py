@@ -72,9 +72,12 @@ class Main:
             for c in self.pop.id:
                 c.fitness = self.fitness(c.id)
             cfitness = [c.fitness for c in self.pop.id]
+            if loop == 0:
+                first_fit = min(cfitness)
             if min(cfitness) == max(cfitness) or (
-                    loop > (50 + 5 * abs(int(self.params.config["WINDOWING"]))) and min(cfitness) > 2100000) or (
-                    loop > 500 and min(cfitness) > 1700000):
+                    loop > (loops / 20 + 5 * abs(int(self.params.config["WINDOWING"]))) and min(
+                cfitness) > first_fit) or (
+                    loop > loops / 2 and min(cfitness) > 0.8 * first_fit):
                 break
             if int(self.params.config["WINDOWING"]) >= 0:
                 worst = max(cfitness)
