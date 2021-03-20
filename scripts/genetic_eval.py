@@ -35,8 +35,6 @@ def rec(values, param):
         logging.info(values)
         if not (values[3] == '-1' and values[5] == 'linear'):
             if not str(values) in done:
-                with open(db_journal, 'a') as journal:
-                    journal.writelines(f'\n{values}')
                 gen_main = gen.Main(dist_table, int(config["DATALEN"]), int(config["POOLS_COUNT"]))
                 chroms_fits = gen_main.mainloop(int(config["LOOPS_COUNT"]), True)
                 logging.debug(f"INSERT INTO {config['DATASET_NAME']} VALUES ({','.join('?' * (len(values) + 2))})")
@@ -46,6 +44,8 @@ def rec(values, param):
                         f"INSERT INTO {config['DATASET_NAME']} VALUES ({','.join('?' * (len(values) + 2))})",
                         [(*values, str(f), str(generation)) for f in fits])
                 conn.commit()
+                with open(db_journal, 'a') as journal:
+                    journal.writelines(f'\n{values}')
         logging.info('Done')
     else:
         for value in params[param[0]]:
