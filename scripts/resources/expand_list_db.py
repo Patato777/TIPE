@@ -36,6 +36,7 @@ print(curs.execute(f'SELECT COUNT(*) FROM new_{table}').fetchone())
 
 if input('Replace records? y/N').lower() == 'y' :
     curs.execute(f'INSERT INTO {table} SELECT * FROM new_{table}')
+    print("Inserted new records")
     curs.execute(f'DELETE from {table} WHERE {col_name} LIKE "[%]"')
 
 curs.execute(f'DROP TABLE new_{table}')
