@@ -26,22 +26,24 @@ conn = sqlite3.connect(dirname + '/resources/genetic.db')
 curs = conn.cursor()
 
 params = eval(config["GEN_PARAMS"])
-curs.execute(f"CREATE TABLE IF NOT EXISTS {config['DATASET_NAME']} {(*params.keys(), 'scores', 'generation')}")
 logging.info(params)
 
 
 def rec(values, param):
     if not param:
         logging.info(values)
-        if not (values[3] == '-1' and values[5] == 'linear'):
+        if not (values[3] == '-1' and values[5] == 'linear') and not (values[2] == '0' and values[1] != 'swap'):
             if not str(values) in done:
+                curs.execute(
+                    f"CREATE TABLE IF NOT EXISTS {config['DATASET_NAME']}_{values[0]} {(*params.keys(), 'scores', 'generation')}")
                 gen_main = gen.Main(dist_table, int(config["DATALEN"]), int(config["POOLS_COUNT"]))
                 chroms_fits = gen_main.mainloop(int(config["LOOPS_COUNT"]), True)
-                logging.debug(f"INSERT INTO {config['DATASET_NAME']} VALUES ({','.join('?' * (len(values) + 2))})")
+                logging.debug(
+                    f"INSERT INTO {config['DATASET_NAME']}_{values[0]} VALUES ({','.join('?' * (len(values) + 2))})")
                 for fits, generation in chroms_fits:
                     logging.debug((*values, str(fits), str(generation)))
                     curs.executemany(
-                        f"INSERT INTO {config['DATASET_NAME']} VALUES ({','.join('?' * (len(values) + 2))})",
+                        f"INSERT INTO {config['DATASET_NAME']}_{values[0]} VALUES ({','.join('?' * (len(values) + 2))})",
                         [(*values, str(f), str(generation)) for f in fits])
                 conn.commit()
                 with open(db_journal, 'a') as journal:
