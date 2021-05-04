@@ -76,7 +76,7 @@ class Main:
                 first_fit = min(cfitness)
             if min(cfitness) == max(cfitness) or (
                     loop > (loops / 20 + 5 * abs(int(self.params.config["WINDOWING"]))) and min(
-                cfitness) > first_fit) or (
+                    cfitness) > 0.95 * first_fit) or (
                     loop > loops / 2 and min(cfitness) > 0.8 * first_fit):
                 break
             if int(self.params.config["WINDOWING"]) >= 0:
