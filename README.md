@@ -10,3 +10,4 @@ Programs:
     - kmeans.py: classical kmeans, with slight modifications in order to create cluster of given cardinal (early: early version, legacy; new: current version)
     - genetic.py: classical genetic algorithm
     - eucl dive.py: Euclidean diving of a graph, cartesian coordinates are associated with each edge
+    - post_permut.py: 2-opt algorithm but not quite
