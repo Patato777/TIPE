@@ -84,11 +84,15 @@ class Main:
         self.map = Map(Canvas(self.root), self.pop.min, self.pop.max)
         self.root.update()
 
-    def dispool(self, pools):
+    def dispool(self, pools, seeds=None):
         self.pop.pools = [[self.pop.pop[k] for k in pool] for pool in pools]
+        if seeds is not None:
+            self.pop.seeds = [self.pop.pop[k] for k in seeds]
         logging.debug(eval(config['COLORS']))
         for k, pool in enumerate(self.pop.pools):
             color = eval(config['COLORS'])[k * 765 // len(pools)]
             for vertex in pool:
-                self.map.colorise(self.map.plot(vertex[0], vertex[1], label(vertex[2])), color)
-
+                plot = self.map.plot(vertex[0], vertex[1], label(vertex[2]))
+                self.map.colorise(plot, color)
+                if seeds is not None and vertex in self.pop.seeds:
+                    self.map.highlight(plot)
