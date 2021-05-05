@@ -3,6 +3,7 @@ import logging
 import os
 import time
 
+import scripts.baseseeds as bs
 from scripts.graph import *
 
 dirname = os.path.dirname(__file__)
@@ -95,7 +96,7 @@ def mykmeans(k, array, details=False):  # Main function
         count += 1
         logging.info(f'Loops: {count}')
     # print(f'Total loops: {count}')
-    if details:
+    if not details:
         return min(pools, key=lambda t: t[1])
     else:
         return pools, allseeds

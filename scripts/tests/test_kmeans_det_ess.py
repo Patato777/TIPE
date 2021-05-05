@@ -21,10 +21,9 @@ def test():
 
     results, seeds = kmeans.mykmeans(7, dist_table, True)
     logging.debug('Completed')
-
     for pools, seeds_set in zip(results, seeds):
         dp_main = dp.Main(cities, names)
-        dp_main.dispool(pools, seeds_set)
+        dp_main.dispool(pools[0], seeds_set)
         next_btn = tkinter.Button(dp_main.root, text="Next", command=lambda: dp_main.root.destroy())
         next_btn.pack()
         try:
