@@ -2,7 +2,6 @@ import configparser
 import logging
 import os
 import time
-import scripts.baseseeds as bs
 
 from scripts.graph import *
 
@@ -78,7 +77,7 @@ class Pool:  # Class of clusters
         return sum([sum([vertex1.edges[vertex2.id].length for vertex2 in self.vertices]) for vertex1 in self.vertices])
 
 
-def mykmeans(k, array):  # Main function
+def mykmeans(k, array, details=False):  # Main function
     workgraph = AgregGraph(array)  # Creating an Graph object corresponding to the given graph
     seeds = eval(f'bs.{config["BASESEEDS"]}')(workgraph, k)
     allseeds = list()
@@ -95,8 +94,12 @@ def mykmeans(k, array):  # Main function
         pools.append(([[vertex.id for vertex in pool.vertices] for pool in workgraph.pools], workgraph.calc_dist()))
         count += 1
         logging.info(f'Loops: {count}')
-    #print(f'Total loops: {count}')
-    return min(pools, key=lambda t: t[1])
+    # print(f'Total loops: {count}')
+    if details:
+        return min(pools, key=lambda t: t[1])
+    else:
+        return pools, allseeds
+
 
 logging.info(f"-------------New execution {time.asctime()}-------------")
 # graph = numpy.array(genweightgraph(n,-100,100))#debug
