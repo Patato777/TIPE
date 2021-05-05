@@ -18,7 +18,7 @@ class Tournament:
     def calc_weight(self):
         return sum([pool.calc_weight() for pool in self.pools])
 
-    def swap(self, node1, node2):#FAUT PAS UTILISER LEURS IDs, SALE CON
+    def swap(self, node1, node2):
         self.nodes[node1.pos], self.nodes[node2.pos] = self.nodes[node2.pos], self.nodes[node1.pos]
         node1.pos, node2.pos = node2.pos, node1.pos
         self.update_pools()
