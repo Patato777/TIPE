@@ -55,3 +55,9 @@ def cah(self, k):
         clusters.pop(n - 1)
     return [min([k for k in values], key=lambda k: sum([all_dist[k, n] for n in values])) for values in
             clusters.values()]
+
+
+def fixed(self, k):
+    ids = [13, 180, 194, 112, 178, 149, 84]
+    assert len(ids) == k
+    return ids
