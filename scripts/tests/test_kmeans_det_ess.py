@@ -21,6 +21,8 @@ def test():
 
     results, seeds = kmeans.mykmeans(7, dist_table, True)
     logging.debug('Completed')
+    logging.info([res[1] for res in results])
+    print([res[1] for res in results])
     for pools, seeds_set in zip(results, seeds):
         dp_main = dp.Main(cities, names)
         dp_main.dispool(pools[0], seeds_set)
