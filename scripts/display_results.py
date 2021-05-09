@@ -70,7 +70,7 @@ class Map:  # Graphic interface
 
 class Population:  # The class of the vertices (population is a list of couples)
     def __init__(self, population, names):
-        self.pop = [(coord[0], coord[1], names[k]) for k, coord in enumerate(population)]
+        self.pop = [(coord[0], coord[1], name) for coord, name in zip(population, names)]
         # The most extreme coords
         self.min = (min(self.pop, key=lambda item: item[0])[0], min(self.pop, key=lambda item: item[1])[1])
         self.max = (max(self.pop, key=lambda item: item[0])[0], max(self.pop, key=lambda item: item[1])[1])
