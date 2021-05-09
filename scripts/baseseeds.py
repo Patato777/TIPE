@@ -26,7 +26,7 @@ def rd(self, k):
 def kmpp(self, k):
     seeds = [random.choice(self.vertices)]
     for s in range(k - 1):
-        weights = [min([n.edges[sd.id].length for sd in seeds]) for n in self.vertices]
+        weights = [min([n.edges[sd.id].length ** 2 for sd in seeds]) for n in self.vertices]
         seed = random.choices(self.vertices, weights=weights)[0]
         seeds.append(seed)
     return [seed.id for seed in seeds]
