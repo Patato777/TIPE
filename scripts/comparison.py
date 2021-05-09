@@ -12,7 +12,7 @@ class Comparison:
         self.attempts = attempts
 
     def calc_weight(self, pools):
-        return sum([sum([sum([self.data[node1][node2] for node2 in pool]) for node1 in pool]) for pool in pools])
+        return sum([sum([self.data[node1][node2] for node2 in pool for node1 in pool]) for pool in pools])
 
     def two_opt(self):
         return [twoopt.Two_opt(self.data, self.k).two_opt() for _ in range(self.attempts)]

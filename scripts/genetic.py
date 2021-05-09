@@ -95,7 +95,7 @@ class Main:
         if insider:
             yield [c.fitness for c in self.pop.id], loop + 1
         else:
-            return best.id
+            yield best.id
 
 
 class Population:

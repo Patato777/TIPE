@@ -31,7 +31,7 @@ def constr_sol_rec(col, lig, p, k, table, rest, tot, dist_mat):
             res.append(rec)
     try:
         return min(res, key=lambda r: r[1])
-    except Exception as error:
+    finally:
         return table, np.inf
         # print(f'lig={lig},col={col},beg={beg},end={end},rest={rest},table={table}')
         # assert False
