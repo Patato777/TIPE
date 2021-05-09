@@ -1,4 +1,5 @@
 import os
+import pylab as pl
 
 from numpy import array, delete, copy
 
@@ -12,6 +13,8 @@ def test():
     k = 7
     clusters = {k: [k] for k in range(len(dist_mat))}
     for i in range(len(dist_mat) - k):
+        with open(os.path.dirname(__file__) + '/resources/cah.txt', 'a') as f:
+            f.write(str(clusters))
         n = len(dist_mat)
         group = min([(x, y) for x in range(n) for y in range(n) if x != y], key=lambda i: dist_mat[i[0], i[1]])
         if group[0] == 0:
@@ -28,6 +31,8 @@ def test():
         for j in range(group[0] + near, n - 1):
             clusters[j], clusters[j + 1] = clusters[j + 1], clusters[j]
         clusters.pop(n - 1)
+    with open(os.path.dirname(__file__) + '/resources/cah.txt', 'a') as f:
+        f.write(str(clusters))
     print(
         [min([k for k in values], key=lambda k: sum([initdist_mat[k, n] for n in values])) for values in
          clusters.values()])
