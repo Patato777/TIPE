@@ -1,3 +1,5 @@
+import os
+
 import numpy as np
 import pylab as pl
 
@@ -15,9 +17,18 @@ def test():
 
     res = list()
     for n, k in n_k:
+        print(n)
+        # tc = comparison.TimeComp(dist_table[:n], k)
         tc = comparison.TimeComp(dist_table[:n], k)
-        rc = comparison.ResComp(dist_table[:n], k)
-        res.append((tc.compare(), rc.compare()))
+        res.append(tc.compare())
 
-    pl.plot([t[0] for t in n_k], [r[0] for r in res])
-    pl.show()
+    try:
+        for i, label in enumerate(['2-opt', 'genetic', 'k-means', 'random']):
+            pl.plot([n for n, _ in n_k], [r[i] for r in res], label=label)
+        pl.legend()
+        pl.xlabel('Nombre de villes')
+        pl.ylabel("Temps d'exécution (en s)")
+        pl.show()
+    finally:
+        with open(dirname + '/resources/rec2.txt', 'w') as f:
+            f.write(str(res))

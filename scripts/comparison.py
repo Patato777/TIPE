@@ -1,3 +1,5 @@
+import logging
+import random
 import time
 
 from scripts import genetic
@@ -18,18 +20,33 @@ class Comparison:
         return [twoopt.Two_opt(self.data, self.k).two_opt() for _ in range(self.attempts)]
 
     def genetic(self):
-        return [genetic.Main(self.data, len(self.data), self.k) for _ in range(self.attempts)]
+        n = len(self.data)
+        results = [list(genetic.Main(self.data, n, self.k).mainloop(1300, False))[0] for _ in range(self.attempts)]
+        n_k = n // self.k
+        return [[[gene for gene in res[j * n_k:(j + 1) * n_k]] for j in range(self.k)] for res in results]
 
     def kmeans(self):
         return [kmeans.mykmeans(self.k, self.data) for _ in range(self.attempts)]
+
+    def rd(self):
+        results = [list(range(len(self.data))) for _ in range(self.attempts)]
+        for result in results:
+            random.shuffle(result)
+        n_k = len(self.data) // self.k
+        return [[[gene for gene in res[j * n_k:(j + 1) * n_k]] for j in range(self.k)] for res in results]
 
 
 class TimeComp(Comparison):
     def compare(self):
         to_t = self.time(self.two_opt) / self.attempts
+        logging.debug('2-opt')
         gen_t = self.time(self.genetic) / self.attempts
+        logging.debug('genetic')
         km_t = self.time(self.kmeans) / self.attempts
-        return to_t, gen_t, km_t
+        logging.debug('k-means')
+        rd_t = self.time(self.rd) / self.attempts
+        logging.debug('random')
+        return to_t, gen_t, km_t, rd_t
 
     def time(self, method):
         t0 = time.perf_counter()
@@ -40,7 +57,12 @@ class TimeComp(Comparison):
 
 class ResComp(Comparison):
     def compare(self):
-        to_r = min(self.two_opt(), key=lambda p: self.calc_weight(p))
-        gen_r = min(self.genetic(), key=lambda p: self.calc_weight(p))
-        km_r = min(self.kmeans(), key=lambda p: self.calc_weight(p))
-        return to_r, gen_r, km_r
+        to_r = min([self.calc_weight(p) for p in self.two_opt()])
+        logging.debug('2-opt')
+        gen_r = min([self.calc_weight(p) for p in self.genetic()])
+        logging.debug('genetic')
+        km_r = min([self.calc_weight(p[0]) for p in self.kmeans()])
+        logging.debug('k-means')
+        rd_r = min([self.calc_weight(p) for p in self.rd()])
+        logging.debug('random')
+        return to_r, gen_r, km_r, rd_r
