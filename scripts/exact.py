@@ -27,7 +27,7 @@ def constr_sol_rec(col, lig, p, k, table, rest, tot, dist_mat):
             rest2 = rest.copy()
             rest2.remove(i)
             table2[lig, col] = i
-            rec = recfunc(col + (lig + 1) // p, (lig + 1) % p, p, k, table2, rest2, tot, dist_mat)
+            rec = constr_sol_rec(col + (lig + 1) // p, (lig + 1) % p, p, k, table2, rest2, tot, dist_mat)
             res.append(rec)
     try:
         return min(res, key=lambda r: r[1])
